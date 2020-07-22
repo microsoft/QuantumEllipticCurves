@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.Quantum.Sdk/0.11.2006.403">
+
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="filehelpers" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.11.2006.403" />
+    <PackageReference Include="Microsoft.Quantum.Xunit" Version="0.11.2006.403" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+</Project>
