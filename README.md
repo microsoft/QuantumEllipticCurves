@@ -1,5 +1,16 @@
+# QuantumEllipticCurves
 
-# Contributing
+## Overview
+
+TODO
+
+The code was developed by [Microsoft Research](http://research.microsoft.com/) for experimentation purposes.
+
+## License
+
+The QuantumEllipticCurves project is licensed under the MIT License; see [`License`](LICENSE) for details.
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
