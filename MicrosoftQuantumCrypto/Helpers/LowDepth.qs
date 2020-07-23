@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 namespace Microsoft.Quantum.OracleCompiler.Graphs.LowDepth {
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;

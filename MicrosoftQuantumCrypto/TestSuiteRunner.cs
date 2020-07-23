@@ -1,4 +1,7 @@
-﻿using Microsoft.Quantum.Simulation.Simulators;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Quantum.Simulation.Simulators;
 using Microsoft.Quantum.Simulation.XUnit;
 using System.Diagnostics;
 using Xunit.Abstractions;

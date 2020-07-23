@@ -1,4 +1,7 @@
-﻿namespace Microsoft.Quantum.Crypto.Isogenies {
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Microsoft.Quantum.Crypto.Isogenies {
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Arithmetic;

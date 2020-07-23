@@ -1,4 +1,7 @@
-﻿namespace Quantum.ModularAddition
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Quantum.ModularAddition
 {
     using cs;
     using Microsoft.Quantum.Crypto.Canon;

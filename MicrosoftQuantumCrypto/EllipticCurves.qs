@@ -1,4 +1,7 @@
-﻿namespace Microsoft.Quantum.Crypto.EllipticCurves {
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Microsoft.Quantum.Crypto.EllipticCurves {
     open Microsoft.Quantum.Arithmetic;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Diagnostics;

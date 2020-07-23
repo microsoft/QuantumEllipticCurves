@@ -1,4 +1,7 @@
-﻿namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Arithmetic;

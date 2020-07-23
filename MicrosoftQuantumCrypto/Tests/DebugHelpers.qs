@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers 
 {
     open Microsoft.Quantum.Intrinsic;
