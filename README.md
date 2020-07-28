@@ -22,7 +22,7 @@ The `MicrosoftQuantumCrypto` project implements the crypographic primitives in Q
 
 +++ MORE DETAILS, EXPLAIN HOW TO RUN +++
 
-### ResourceEstimatorspp
+### ResourceEstimators
 
 +++ MORE DETAILS, EXPLAIN HOW TO RUN +++
 
