@@ -2,13 +2,39 @@
 
 ## Overview
 
-TODO
+The Quantum Elliptic Curves project contains Q# implementations of quantum elliptic curves primitives, and can be used to obtain resource estimates for the quantum elliptic curve discrete logarithms algorithm (as described in [1]).
+
+The project depends on version 0.11.2006.403 of the [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit). It can be built using [Visual Studio](https://visualstudio.microsoft.com/) or the free [Visual Studio Code](https://code.visualstudio.com/).
 
 The code was developed by [Microsoft Research](http://research.microsoft.com/) for experimentation purposes.
+
+[1] Thomas Häner, Samuel Jaques, Michael Naehrig, Martin Roetteler, and Mathias Soeken, "".
+To appear in: Int'l Conf. on Post-Quantum Cryptography (PQCrypto 2020).
+Preprint available at [`https://arxiv.org/abs/2001.09580`](https://arxiv.org/abs/2001.09580).
+
+## Contents
+
+The Quantum Elliptic Curves Visual Studio solution contains the following projects:
+
+### MicrosoftQuantumCrypto
+
+The `MicrosoftQuantumCrypto` project implements the crypographic primitives in Q# and contains unit tests that can be run using Visual Studio's Test Explorer.
+
++++ MORE DETAILS, EXPLAIN HOW TO RUN +++
+
+### ResourceEstimatorspp
+
++++ MORE DETAILS, EXPLAIN HOW TO RUN +++
+
+## Contributors
+
+- Samuel Jaques
 
 ## License
 
 The QuantumEllipticCurves project is licensed under the MIT License; see [`License`](LICENSE) for details.
+
+## References
 
 ## Contributing
 

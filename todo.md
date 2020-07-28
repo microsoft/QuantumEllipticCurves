@@ -1,5 +1,13 @@
 ﻿# TODOs
 
+## Release checklist
+
+- Run unit test and resource estimator for each cost metric; make sure everything passes
+- Review README.md's (build/install) instructions
+- Get rid the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs)
+- Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder?
+- when ready, copy `dev` content to `main`, and make project public
+
 ## Canon.qs
 
 - Rename the file to something other than Canon.qs. 
