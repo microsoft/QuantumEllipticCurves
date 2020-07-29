@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.Quantum.Crypto.Canon {
@@ -9,7 +9,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Crypto.Arithmetic;
-    open Microsoft.Quantum.OracleCompiler.Graphs.LowDepth ;
+    open Microsoft.Quantum.OracleCompiler.Graphs.LowDepth;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,40 +19,29 @@ namespace Microsoft.Quantum.Crypto.Canon {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     function IsTestable () : Bool {
-        return true; //testable implementation
-        //return false; // untestable (for cost estimates)
+        body intrinsic;
     }
 
-    function CostMetric () : Int {
-            return 0; //minimize depth
-        //  return 1; // minimize T
-        //	return 2; // minimize width
-    }
+    function IsMinimizeDepthCostMetric () : Bool {
+        body intrinsic;
+	}
 
-    operation OutputGlobalParameters () : Unit {
-        if (IsTestable()){
-            Message("Running testable functions");
-        } else {
-            Message("Running non-testable functions");
-        }
-        if (CostMetric() == 0){
-            Message("Minimizing depth");
-        } elif (CostMetric() == 1){
-            Message("Minimizing T gates");
-        } else {
-            Message("Minimizing width");
-        }
-    }
+    function IsMinimizeToffoliCostMetric () : Bool {
+        body intrinsic;
+	}
 
+    function IsMinimizeWidthCostMetric () : Bool {
+        body intrinsic;
+	}
 
     ///////////// Wrappers ///////////
 
     /// # Summary
     /// Applies a single-qubit operation to each element in a register. 
-    /// Wrapper to choose different operations depending on CostMetric().
+    /// Wrapper to choose different operations depending on the cost metric.
     operation ApplyToEachWrapperCA<'T>(singleElementOperation : ('T => Unit is Ctl + Adj), register : 'T[]) : Unit {
         body (...){
-            if (CostMetric() == 2){//low width
+            if (IsMinimizeWidthCostMetric()){
                 ApplyToEachCA(singleElementOperation, register);
             } else {
                 ApplyToEachLowDepthCA(singleElementOperation, register);
@@ -79,7 +68,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
             if (IsTestable()){
                 CCNOT(control1, control2, target);
             } else {
-                if (CostMetric() == 2){//low width
+                if (IsMinimizeWidthCostMetric()){
                     ccnot_T_depth_3(control1, control2, target);
                 } else {
                     ccnot_T_depth_1(control1, control2, target);
@@ -668,7 +657,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
             SwapReverseRegister(xs);
         }
         controlled (controls, ...){
-            if (CostMetric() == 2){//don't fanout with low width
+            if (IsMinimizeWidthCostMetric()) { //don't fanout with low width
                 (Controlled SwapReverseRegister)(controls, (xs));
             } else {
                 let nQubits = Length(xs);
@@ -908,9 +897,9 @@ namespace Microsoft.Quantum.Crypto.Canon {
             } elif (nQubits == 2){
                 CCNOTWrapper(xs[0], xs[1], output);
             } else {
-                if (CostMetric() == 2){//low width
+                if (IsMinimizeWidthCostMetric()) {
                     LinearMultiControl(xs, output);
-                } else {//high width but log-depth and small T-count
+                } else { //high width but log-depth and small T-count
                     using ((spareControls, ancillaOutput) = (Qubit[nQubits - 2], Qubit())){
                         CompressControls(xs, spareControls, ancillaOutput);
                         CNOT(ancillaOutput, output);

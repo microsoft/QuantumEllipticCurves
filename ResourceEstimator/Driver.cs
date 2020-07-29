@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Quantum.ModularAddition
 {
     using cs;
     using Microsoft.Quantum.Crypto.Canon;
+    using Microsoft.Quantum.ModularArithmetic.DebugHelpers;
     using Microsoft.Quantum.Simulation.Simulators;
     using Microsoft.Quantum.Simulation.Simulators.QCTraceSimulators;
     using ModularArithmeticTimingTests;
@@ -12,6 +13,49 @@ namespace Quantum.ModularAddition
     using System.Collections.Generic;
     using System.Threading;
 
+    static class Parameters
+    {
+        static Parameters()
+        {
+            var qsim = new ToffoliSimulator();
+            Parameters.IsTestable = IsMinimizeDepthCostMetric.Run(qsim).Result;
+            Parameters.MinimizeDepthCostMetric = IsMinimizeDepthCostMetric.Run(qsim).Result;
+            Parameters.MinimizeToffoliCostMetric = IsMinimizeToffoliCostMetric.Run(qsim).Result;
+            Parameters.MinimizeWidthCostMetric = IsMinimizeWidthCostMetric.Run(qsim).Result;
+        }
+
+        public static bool IsTestable { get; private set; }
+        public static bool MinimizeDepthCostMetric { get; private set; }
+        public static bool MinimizeToffoliCostMetric { get; private set; }
+        public static bool MinimizeWidthCostMetric { get; private set; }
+    
+        public static void Print()
+        {
+            if (IsTestable)
+            {
+                Console.WriteLine("Running testable functions");
+            }
+            else
+            {
+                Console.WriteLine("Running non-testable functions");
+            }
+
+            if (MinimizeDepthCostMetric)
+            {
+                Console.WriteLine("Minimizing depth");
+            }
+            else if(MinimizeToffoliCostMetric)
+            {
+                Console.WriteLine("Minimizing T gates");
+            }
+            else
+            {
+                Console.WriteLine("Minimizing width");
+            }
+
+        }
+    }
+    
     class Driver
     {
         public delegate System.Threading.Tasks.Task<Microsoft.Quantum.Simulation.Core.QVoid> RunQop(QCTraceSimulator sim, long n, bool isControlled);
@@ -19,7 +63,17 @@ namespace Quantum.ModularAddition
 
         public static void Main(string[] args)
         {
-            var subFolder = "LowDepth/"; // <- Change when running alternate optimization strategies
+            string subFolder;
+            if (Parameters.MinimizeDepthCostMetric)
+            {
+                subFolder = "LowDepth/";
+            } else if (Parameters.MinimizeToffoliCostMetric)
+            {
+                subFolder = "LowT/";
+            } else
+            {
+                subFolder = "LowWidth/";
+            }
 
             int[] bigTestSizes = {4, 8, 16, 32, 64, 110, 128, 160, 192, 224, 256, 384, 512};
             int[] smallSizes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
@@ -55,9 +109,7 @@ namespace Quantum.ModularAddition
 
         public static void EstimateLookup(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
@@ -79,9 +131,7 @@ namespace Quantum.ModularAddition
 
         public static void EstimateArithmetic(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
@@ -119,9 +169,7 @@ namespace Quantum.ModularAddition
         // This is an extremely costly estimate to run.
         public static void EstimatePointAdditionWindowSizes(int[] testSizes, string directory, int costMetric) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             //Guesses
             int[] minWindowSizes = {14,  15,  15,  15,  16,  16,  16};
@@ -158,9 +206,7 @@ namespace Quantum.ModularAddition
 
 
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             //Construct window size maximum and minimum values
             // Idea: Minimum value is 1, maximum value is the full
@@ -196,9 +242,7 @@ namespace Quantum.ModularAddition
         // See ReadMe
         public static void EstimateModularMultiplicationWindowSizes(int[] testSizes, string directory, int costMetric) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             //Construct window size maximum and minimum values
             // Idea: Minimum value is 0 (no windowing), maximum value is the full
@@ -234,9 +278,7 @@ namespace Quantum.ModularAddition
         // estimated for bit sizes over 500
         public static void EstimateCheapModularArithmetic(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
@@ -264,9 +306,7 @@ namespace Quantum.ModularAddition
         // and the operations are so costly to estimate.
         public static void EstimateExpensiveModularArithmetic(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
@@ -302,9 +342,7 @@ namespace Quantum.ModularAddition
         // Others could be enabled
         public static void EstimateEllipticCurveArithmetic(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
@@ -338,9 +376,7 @@ namespace Quantum.ModularAddition
         // Checks only signed, windowed point addition for which there are fixed parameters.
         public static void EstimateFixedEllipticCurveArithmetic(int[] testSizes, string directory) {
             // Writes global parameters (cost metric, testable gates) to terminal
-            var qsim = new ToffoliSimulator();
-            OutputGlobalParameters.Run(qsim).Wait();
-            qsim = null;
+            Parameters.Print();
 
             System.IO.Directory.CreateDirectory(directory);
 
