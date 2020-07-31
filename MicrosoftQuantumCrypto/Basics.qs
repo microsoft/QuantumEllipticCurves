@@ -26,7 +26,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
         body intrinsic;
 	}
 
-    function IsMinimizeToffoliCostMetric () : Bool {
+    function IsMinimizeTCostMetric () : Bool {
         body intrinsic;
 	}
 

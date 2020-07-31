@@ -4,15 +4,15 @@
     <OutputType>library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
-    <Configurations>MinimizeWidth;MinimizeDepth;MinimizeToffoli</Configurations>
+    <Configurations>MinimizeWidth;MinimizeDepth;MinimizeT</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinimizeDepth|AnyCPU'">
     <DefineConstants>MINIMIZE_DEPTH</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinimizeToffoli|AnyCPU'">
-    <DefineConstants>MINIMIZE_TOFFOLI</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinimizeT|AnyCPU'">
+    <DefineConstants>MINIMIZE_T</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinimizeWidth|AnyCPU'">

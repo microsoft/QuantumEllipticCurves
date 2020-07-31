@@ -8,7 +8,7 @@ The project depends on version 0.11.2006.403 of the [Microsoft Quantum Developme
 
 The code was developed by [Microsoft Research](http://research.microsoft.com/) for experimentation purposes.
 
-[1] Thomas Häner, Samuel Jaques, Michael Naehrig, Martin Roetteler, and Mathias Soeken, "".
+[1] Thomas Häner, Samuel Jaques, Michael Naehrig, Martin Roetteler, and Mathias Soeken, "Improved quantum circuits for elliptic curve discrete logarithms".
 To appear in: Int'l Conf. on Post-Quantum Cryptography (PQCrypto 2020).
 Preprint available at [`https://arxiv.org/abs/2001.09580`](https://arxiv.org/abs/2001.09580).
 
@@ -20,21 +20,20 @@ The Quantum Elliptic Curves Visual Studio solution contains the following projec
 
 The `MicrosoftQuantumCrypto` project implements the crypographic primitives in Q# and contains unit tests that can be run using Visual Studio's Test Explorer.
 
-+++ MORE DETAILS, EXPLAIN HOW TO RUN +++
++++ TODO: MORE DETAILS, EXPLAIN HOW TO RUN +++
 
 ### ResourceEstimatorspp
 
-+++ MORE DETAILS, EXPLAIN HOW TO RUN +++
++++ TODO: MORE DETAILS, EXPLAIN HOW TO RUN +++
 
 ## Contributors
 
 - Samuel Jaques
++++ TODO: who else +++
 
 ## License
 
 The QuantumEllipticCurves project is licensed under the MIT License; see [`License`](LICENSE) for details.
-
-## References
 
 ## Contributing
 

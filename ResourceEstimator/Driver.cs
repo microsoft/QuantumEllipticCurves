@@ -20,13 +20,13 @@ namespace Quantum.ModularAddition
             var qsim = new ToffoliSimulator();
             Parameters.IsTestable = IsMinimizeDepthCostMetric.Run(qsim).Result;
             Parameters.MinimizeDepthCostMetric = IsMinimizeDepthCostMetric.Run(qsim).Result;
-            Parameters.MinimizeToffoliCostMetric = IsMinimizeToffoliCostMetric.Run(qsim).Result;
+            Parameters.MinimizeTCostMetric = IsMinimizeTCostMetric.Run(qsim).Result;
             Parameters.MinimizeWidthCostMetric = IsMinimizeWidthCostMetric.Run(qsim).Result;
         }
 
         public static bool IsTestable { get; private set; }
         public static bool MinimizeDepthCostMetric { get; private set; }
-        public static bool MinimizeToffoliCostMetric { get; private set; }
+        public static bool MinimizeTCostMetric { get; private set; }
         public static bool MinimizeWidthCostMetric { get; private set; }
     
         public static void Print()
@@ -44,7 +44,7 @@ namespace Quantum.ModularAddition
             {
                 Console.WriteLine("Minimizing depth");
             }
-            else if(MinimizeToffoliCostMetric)
+            else if(MinimizeTCostMetric)
             {
                 Console.WriteLine("Minimizing T gates");
             }
@@ -67,7 +67,7 @@ namespace Quantum.ModularAddition
             if (Parameters.MinimizeDepthCostMetric)
             {
                 subFolder = "LowDepth/";
-            } else if (Parameters.MinimizeToffoliCostMetric)
+            } else if (Parameters.MinimizeTCostMetric)
             {
                 subFolder = "LowT/";
             } else

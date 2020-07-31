@@ -13,20 +13,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		MinimizeDepth|Any CPU = MinimizeDepth|Any CPU
-		MinimizeToffoli|Any CPU = MinimizeToffoli|Any CPU
+		MinimizeT|Any CPU = MinimizeT|Any CPU
 		MinimizeWidth|Any CPU = MinimizeWidth|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeDepth|Any CPU.ActiveCfg = MinimizeDepth|Any CPU
 		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeDepth|Any CPU.Build.0 = MinimizeDepth|Any CPU
-		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeToffoli|Any CPU.ActiveCfg = MinimizeToffoli|Any CPU
-		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeToffoli|Any CPU.Build.0 = MinimizeToffoli|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeT|Any CPU.ActiveCfg = MinimizeT|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeT|Any CPU.Build.0 = MinimizeT|Any CPU
 		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeWidth|Any CPU.ActiveCfg = MinimizeWidth|Any CPU
 		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeWidth|Any CPU.Build.0 = MinimizeWidth|Any CPU
 		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeDepth|Any CPU.ActiveCfg = Release|Any CPU
 		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeDepth|Any CPU.Build.0 = Release|Any CPU
-		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeToffoli|Any CPU.ActiveCfg = Release|Any CPU
-		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeToffoli|Any CPU.Build.0 = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeT|Any CPU.ActiveCfg = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeT|Any CPU.Build.0 = Release|Any CPU
 		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeWidth|Any CPU.ActiveCfg = Release|Any CPU
 		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeWidth|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

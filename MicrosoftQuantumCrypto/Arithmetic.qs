@@ -39,7 +39,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...){
             if (IsMinimizeDepthCostMetric()){
                 GreaterThanLookAhead(xs, ys, result);
-            } elif (IsMinimizeToffoliCostMetric()){
+            } elif (IsMinimizeTCostMetric()){
                 CKDMGGreaterThan(xs, ys, result);
             } else {
                 GreaterThan(xs, ys, result);
@@ -64,7 +64,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...){
             if (IsMinimizeDepthCostMetric()) {
                 GreaterThanConstantLookAhead(constant, xs, result);
-            } elif (IsMinimizeToffoliCostMetric()) {
+            } elif (IsMinimizeTCostMetric()) {
                 CompareToConstant(true, CKDMGGreaterThan, constant, xs, result);
             } else {
                 CompareToConstant(true, GreaterThan, constant, xs, result);
@@ -89,7 +89,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...){
             if (IsMinimizeDepthCostMetric()) {
                 LessThanConstantLookAhead(constant, xs, result);
-            } elif (IsMinimizeToffoliCostMetric()) {
+            } elif (IsMinimizeTCostMetric()) {
                 CompareToConstant(false, CKDMGGreaterThan, constant, xs, result);
             } else {
                 CompareToConstant(false, GreaterThan, constant, xs, result);
@@ -121,7 +121,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...){
             if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAdder(xs, ys, carry);	
-            } elif (IsMinimizeToffoliCostMetric()) {
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAdder(xs, ys, carry);	
             } else {
                 RippleCarryAdderTTK(xs, ys, carry);
@@ -151,7 +151,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...){
             if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAdderNoCarry(xs, ys);
-            } elif (IsMinimizeToffoliCostMetric()) {
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAdderNoCarry(xs, ys);
             } else {
                 RippleCarryAdderNoCarryTTK(xs, ys);
@@ -183,7 +183,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         body (...) {
             if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAddConstant(constant, xs);
-            } elif (IsMinimizeToffoliCostMetric()) {
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAddConstant(constant, xs);
             } else {
                 _AddConstantLowWidth(constant, xs);

@@ -1510,7 +1510,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 //Extrapolated from known values
                 return Max([0, Microsoft.Quantum.Math.Ceiling(1.97*lglgn - 1.11 - 0.5)]);//extra 0.5 is to turn ceiling to round
             }
-        } elif (IsMinimizeToffoliCostMetric()) {
+        } elif (IsMinimizeTCostMetric()) {
             //Extrapolated from known values
             return Microsoft.Quantum.Math.Ceiling(lgn * 0.68  + 0.12 - 0.5);//extra 0.5 is to turn ceiling to round
         } elif (IsMinimizeWidthCostMetric()) {

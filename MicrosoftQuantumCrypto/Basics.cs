@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 using Microsoft.Quantum.Simulation.Core;
@@ -42,14 +42,14 @@ namespace Microsoft.Quantum.Crypto.Canon
         }
     }
 
-    public partial class IsMinimizeToffoliCostMetric
+    public partial class IsMinimizeTCostMetric
     {
-        public class Native : IsMinimizeToffoliCostMetric
+        public class Native : IsMinimizeTCostMetric
         {
-            static bool IsMinimizeToffoliCostMetricFunc(QVoid qVoid)
+            static bool IsMinimizeTCostMetricFunc(QVoid qVoid)
             {
                 return
-#if MINIMIZE_TOFFOLI
+#if MINIMIZE_T
                     true;
 #else
                     false;
@@ -58,7 +58,7 @@ namespace Microsoft.Quantum.Crypto.Canon
 
             public Native(IOperationFactory m) : base(m) { }
 
-            public override Func<QVoid, bool> Body => IsMinimizeToffoliCostMetricFunc;
+            public override Func<QVoid, bool> Body => IsMinimizeTCostMetricFunc;
         }
     }
 
