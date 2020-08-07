@@ -37,11 +37,11 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// Single qubit that will be flipped if $x>y$.
     operation GreaterThanWrapper(xs : LittleEndian, ys : LittleEndian, result : Qubit) : Unit {
         body (...){
-            if (CostMetric() == 0){//low depth
+            if (IsMinimizeDepthCostMetric()){
                 GreaterThanLookAhead(xs, ys, result);
-            } elif (CostMetric() == 1){//low T
+            } elif (IsMinimizeTCostMetric()){
                 CKDMGGreaterThan(xs, ys, result);
-            } else {// low width
+            } else {
                 GreaterThan(xs, ys, result);
             }
         }
@@ -62,9 +62,9 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// Single qubit that will be flipped if x>c.
     operation GreaterThanConstant(constant : BigInt, xs : LittleEndian, result : Qubit) : Unit {
         body (...){
-            if (CostMetric() == 0){//low depth
+            if (IsMinimizeDepthCostMetric()) {
                 GreaterThanConstantLookAhead(constant, xs, result);
-            } elif (CostMetric() == 1){
+            } elif (IsMinimizeTCostMetric()) {
                 CompareToConstant(true, CKDMGGreaterThan, constant, xs, result);
             } else {
                 CompareToConstant(true, GreaterThan, constant, xs, result);
@@ -87,9 +87,9 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// Single qubit that will be flipped if $x<c$.
     operation LessThanConstant(constant : BigInt, xs : LittleEndian, result : Qubit) : Unit {
         body (...){
-            if (CostMetric() == 0){//low depth
+            if (IsMinimizeDepthCostMetric()) {
                 LessThanConstantLookAhead(constant, xs, result);
-            } elif (CostMetric() == 1){
+            } elif (IsMinimizeTCostMetric()) {
                 CompareToConstant(false, CKDMGGreaterThan, constant, xs, result);
             } else {
                 CompareToConstant(false, GreaterThan, constant, xs, result);
@@ -119,11 +119,11 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// Carry qubit, xored with the most significant bit of the sum.
     operation AddInteger(xs : LittleEndian, ys : LittleEndian, carry : Qubit) : Unit {
         body (...){
-            if (CostMetric() == 0){ //low depth
+            if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAdder(xs, ys, carry);	
-            } elif (CostMetric() == 1){	//low T
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAdder(xs, ys, carry);	
-            } else {// low width
+            } else {
                 RippleCarryAdderTTK(xs, ys, carry);
             }							
         }
@@ -149,11 +149,11 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// the sum.
     operation AddIntegerNoCarry(xs : LittleEndian, ys : LittleEndian) : Unit {
         body (...){
-            if (CostMetric() == 0){//low depth
+            if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAdderNoCarry(xs, ys);
-            } elif (CostMetric() == 1){//low T
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAdderNoCarry(xs, ys);
-            } else {// low width
+            } else {
                 RippleCarryAdderNoCarryTTK(xs, ys);
             }
         }
@@ -181,11 +181,11 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     operation AddConstant (constant : BigInt, xs : LittleEndian) : Unit
     {
         body (...) {
-            if (CostMetric() == 0){//low depth
+            if (IsMinimizeDepthCostMetric()) {
                 CarryLookAheadAddConstant(constant, xs);
-            } elif (CostMetric() == 1){//low T
+            } elif (IsMinimizeTCostMetric()) {
                 CDKMGAddConstant(constant, xs);
-            } else {// low width
+            } else {
                 _AddConstantLowWidth(constant, xs);
             }
         }
@@ -217,7 +217,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         }
         controlled(controls, ...){
             Fact(Length(xs!) == Length(ys!), $"Registers must have equal lengths to swap (current lengths : {Length(xs!)} and {Length(ys!)})");
-            if (CostMetric() == 2){//low width
+            if (IsMinimizeWidthCostMetric()) {
                 for (idx in 0 .. Length(xs!) - 1){
                     (Controlled SWAP)(controls, (xs![idx], ys![idx]));
                 }
@@ -255,7 +255,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             Fact(Length(inputs!)==Length(outputs!), 
                 $"Inputs should be the same length; they are {Length(inputs!)} and {Length(outputs!)}"
             );
-            if (CostMetric() == 2){//low width
+            if (IsMinimizeWidthCostMetric()) {
                 for (idx in 0 .. Length(inputs!) - 1){
                     (Controlled X)(controls + [inputs![idx]], (outputs![idx]));
                 }
@@ -307,7 +307,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             let posArray = PositionsOfOnesInBigInt(value);
             if (Length(posArray)>0){//if the length is zero, then value=0
                 Fact(posArray[Length(posArray) - 1] < Length(target!), $"Cannot XOR {value} into a {Length(target!)}-bit register; the number is too big");
-                if (CostMetric() == 2){//low width
+                if (IsMinimizeWidthCostMetric()) {
                     for (idx in 0 .. Length(posArray) - 1) {
                         (Controlled X)(controls, (target![posArray[idx]]));
                     }

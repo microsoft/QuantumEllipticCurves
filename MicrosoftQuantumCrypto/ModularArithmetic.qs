@@ -1501,7 +1501,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             return 0;
         }
         let lgn = Microsoft.Quantum.Math.Log(IntAsDouble(nQubits)) / Microsoft.Quantum.Math.Log(2.0);
-        if (CostMetric() == 0){//minize depth
+        if (IsMinimizeDepthCostMetric()) {
             if (nQubits < 4){
                 return 0;
             } else {
@@ -1510,10 +1510,10 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 //Extrapolated from known values
                 return Max([0, Microsoft.Quantum.Math.Ceiling(1.97*lglgn - 1.11 - 0.5)]);//extra 0.5 is to turn ceiling to round
             }
-        } elif (CostMetric() == 1){//minize T
+        } elif (IsMinimizeTCostMetric()) {
             //Extrapolated from known values
             return Microsoft.Quantum.Math.Ceiling(lgn * 0.68  + 0.12 - 0.5);//extra 0.5 is to turn ceiling to round
-        } elif (CostMetric() == 2){//minize width
+        } elif (IsMinimizeWidthCostMetric()) {
             // This returns 0 so there is no windowing
             // This is the width-minimal option
             // The other formula is for minimizing T count, subject to the width-minimizing adders, etc.
