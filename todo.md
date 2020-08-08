@@ -4,9 +4,15 @@
 
 - Run unit test and resource estimator for each cost metric; make sure everything passes
 - Review README.md's (build/install) instructions
-- Get rid the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs)
+- Get rid of the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs)
 - Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder?
+Remove tests for RippleCarryAdderD, RippleCarryAdderCDKM and RippleCarryAdderTTK as they are tested in the standard libraries.
+- Update to the newest QDK and Standard Libraries again. They changed already.
 - when ready, copy `dev` content to `main`, and make project public
+
+## After release?
+
+- Add tests for the adjoint operations.
 
 ## Canon.qs
 
@@ -56,3 +62,7 @@
 The current plan is to not release this in the first go. It should be relatively easy to release it once the elliptic curve library is out. But we should first write a paper to go with it.
 
 We should leave it in here and make it at least compile with the rest (and possibly test some of it), but remove from the first release.
+
+## DebugHelpers.qs
+
+Do we need BadlyFormedTest() and AdjointTest()? 
