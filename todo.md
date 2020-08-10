@@ -63,6 +63,8 @@ The current plan is to not release this in the first go. It should be relatively
 
 We should leave it in here and make it at least compile with the rest (and possibly test some of it), but remove from the first release.
 
+**After talking with Sam we decided to release the isogeny functions right away. This will stay in now.**
+
 ## DebugHelpers.qs
 
 Do we need BadlyFormedTest() and AdjointTest()? 
