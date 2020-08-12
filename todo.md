@@ -4,9 +4,9 @@
 
 - Run unit test and resource estimator for each cost metric; make sure everything passes
 - Review README.md's (build/install) instructions
-- Get rid of the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs)
-- Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder?
-Remove tests for RippleCarryAdderD, RippleCarryAdderCDKM and RippleCarryAdderTTK as they are tested in the standard libraries.
+- Get rid of the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs) **Done:** We are going to keep everything.
+- Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder? **Done:** CDKM adder has been fixed.
+- Remove tests for RippleCarryAdderD, RippleCarryAdderCDKM and RippleCarryAdderTTK as they are tested in the standard libraries. **Done:** Those tests have been removed.
 - Update to the newest QDK and Standard Libraries again. They changed already.
 - when ready, copy `dev` content to `main`, and make project public
 
