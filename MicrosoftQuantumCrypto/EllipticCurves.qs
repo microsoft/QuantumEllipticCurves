@@ -519,7 +519,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
             // }
             if (inputPoint::z){
                 //point is the identity: just write the bonus qubit
-                TestIfAllOnes(controls, outputZ);
+                CheckIfAllOnes(controls, outputZ);
             }
             (Controlled EncodeBigIntInMontgomeryForm)(controls, (inputPoint::y, outputPoint::ys));
             (Controlled EncodeBigIntInMontgomeryForm)(controls, (inputPoint::x, outputPoint::xs));

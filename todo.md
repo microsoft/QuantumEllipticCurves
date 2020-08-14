@@ -8,6 +8,7 @@
 - Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder? **Done:** CDKM adder has been fixed.
 - Remove tests for RippleCarryAdderD, RippleCarryAdderCDKM and RippleCarryAdderTTK as they are tested in the standard libraries. **Done:** Those tests have been removed.
 - Update to the newest QDK and Standard Libraries again. They changed already.
+- @Christian: do you think we can get rid of those warnings?
 - when ready, copy `dev` content to `main`, and make project public
 
 ## After release?
@@ -22,7 +23,7 @@
 
 - Make IsTestable() and CostMetric() compile options?
 
-- FakeOpWithT, FakeOpNoT: This does not seem to be used anywhere. Removed them for now. Was probably used by Fernando to experiment with weird behavior.
+- FakeOpWithT, FakeOpNoT: This does not seem to be used anywhere. **Done:** Removed them for now. Was probably used by Fernando to experiment with weird behavior.
 
 - Low-T AND and CCNOT gates. Some are now in the standard libraries.
 
@@ -55,7 +56,7 @@
 
     The above should be taken into account. AND gates can be replaced by those gates from the standard libraries.
 
-- OppositeTest: Should this be renamed? It sounds like a Test operation, but maybe it's better to call it OppositeCheck?
+- OppositeTest: Should this be renamed? It sounds like a Test operation, but maybe it's better to call it OppositeCheck **Done:** Renamed to OppositeCheck, also renamed TestIfAllZero to CheckIfAllZero and TestIfAllOnes to CheckIfAllOnes.
 
 ## Isogenies.qs
 
@@ -67,4 +68,8 @@ We should leave it in here and make it at least compile with the rest (and possi
 
 ## DebugHelpers.qs
 
-Do we need BadlyFormedTest() and AdjointTest()? 
+Do we need BadlyFormedTest() and AdjointTest()? **Done:** Removed both.
+
+## TimingTests.qs
+
+Does it make sense to call these timing tests? Isn't it more like obtaining the estimates?

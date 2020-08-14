@@ -1,16 +1,18 @@
 # QuantumEllipticCurves
 
-## Overview
+The QuantumEllipticCurves project contains Q# implementations of quantum circuits for elliptic curve arithmetic and isogeny computation.
 
-The Quantum Elliptic Curves project contains Q# implementations of quantum elliptic curves primitives, and can be used to obtain resource estimates for the quantum elliptic curve discrete logarithms algorithm (as described in [1]).
+## Shor's algorithm for computing elliptic curve discrete logarithms
+
+The code provides all operations to obtain resource estimates for quantum circuits to compute elliptic curve discrete logarithms using Shor's algorithm as described in [1] and [2]. Building on integer and modular arithmetic such as modular multiplication, squaring and inversion, the project contains circuits for adding elliptic curve points on Weierstraß curves over prime fields.
+
+## Computing supersingular isogenies
+
+Operations for field arithmetic of quadratic extension fields, Montgomery curve arithmetic over such fields, and circuits for 2-isogeny computations are used to construct circuits for isogeny computations on supersingular elliptic curves as used in SIDH [3] and SIKE [4]. 
 
 The project depends on version 0.11.2006.403 of the [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit). It can be built using [Visual Studio](https://visualstudio.microsoft.com/) or the [.NET CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/).
 
 The code was developed by [Microsoft Research](http://research.microsoft.com/) for experimentation purposes.
-
-[1] Thomas Häner, Samuel Jaques, Michael Naehrig, Martin Roetteler, and Mathias Soeken, "Improved quantum circuits for elliptic curve discrete logarithms".
-To appear in: Int'l Conf. on Post-Quantum Cryptography (PQCrypto 2020).
-Preprint available at [`https://arxiv.org/abs/2001.09580`](https://arxiv.org/abs/2001.09580).
 
 ## Contents
 
@@ -48,6 +50,22 @@ To run the estimator:
 
 - Samuel Jaques
 +++ TODO: who else +++
+
+## References
+
+[1] Thomas Häner, Samuel Jaques, Michael Naehrig, Martin Roetteler, and Mathias Soeken: "Improved quantum circuits for elliptic curve discrete logarithms".
+Post-Quantum Cryptography – PQCrypto 2020, Lecture Notes in Computer Science 12100, Springer-Verlag (2020), pp 425–444.
+[`https://eprint.iacr.org/2020/077`](https://eprint.iacr.org/2020/077).
+
+[2] Martin Roetteler, Michael Naehrig, Krysta M. Svore, and Kristin Lauter: "Quantum Resource Estimates for Computing Elliptic Curve Discrete Logarithms".
+Advances in Cryptology – ASIACRYPT 2017, Lecture Notes in Computer Science 10625, Springer-Verlag (2017), pp 241–272.
+[`https://eprint.iacr.org/2017/598`](https://eprint.iacr.org/2017/598).
+
+[3] David Jao and Luca DeFeo, "Towards quantum-resistant cryptosystems from supersingular elliptic curve isogenies". Post-quantum cryptography – PQCrypto 2011, Lecture Notes in Computer Science 7071, pp. 19-34, 2011.
+[`https://eprint.iacr.org/2011/506`](https://eprint.iacr.org/2011/506).
+
+[4] Reza Azarderakhsh, Matthew Campagna, Craig Costello, Luca De Feo, Basil Hess, Amir Jalali, David Jao, Brian Koziel, Brian LaMacchia, Patrick Longa, Michael Naehrig, Geovandro Pereira, Joost Renes, Vladimir Soukharev, and David Urbanik, "Supersingular Isogeny Key Encapsulation". Submission to the NIST Post-Quantum Standardization project, 2017.
+['https://sike.org'](https://sike.org)
 
 ## License
 

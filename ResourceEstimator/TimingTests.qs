@@ -108,16 +108,16 @@ namespace ModularArithmeticTimingTests
         }
     }
 
-    operation TestifAllZeroTimingTest(nQubits : Int, isControlled : Bool) : Unit {
+    operation CheckIfAllZeroTimingTest(nQubits : Int, isControlled : Bool) : Unit {
         using ((xs,result) = (Qubit[nQubits], Qubit())){
-            ControlledOp(isControlled, TestIfAllZero, (xs, result));
+            ControlledOp(isControlled, CheckIfAllZero, (xs, result));
             ClearRegister(xs+[result]);
         }
     }
 
-    operation TestifAllOneTimingTest(nQubits : Int, isControlled : Bool) : Unit {
+    operation CheckIfAllOneTimingTest(nQubits : Int, isControlled : Bool) : Unit {
         using ((xs,result) = (Qubit[nQubits], Qubit())){
-            ControlledOp(isControlled, TestIfAllOnes, (xs, result));
+            ControlledOp(isControlled, CheckIfAllOnes, (xs, result));
             ClearRegister(xs+[result]);
         }
     }

@@ -69,7 +69,7 @@ namespace Microsoft.Quantum.Crypto.Tests{
 
 
 
-    operation TestIfAllOnesTestHelper(
+    operation CheckIfAllOnesTestHelper(
         OnesTest : ((Qubit[], Qubit) => Unit is Ctl + Adj),
         testValue : BigInt,
         nQubits : Int
@@ -129,19 +129,19 @@ namespace Microsoft.Quantum.Crypto.Tests{
     }
 
 
-    operation TestIfAllOnesReversibleTestHelper(
+    operation CheckIfAllOnesReversibleTestHelper(
         OnesTest : ((Qubit[], Qubit) => Unit is Ctl + Adj),
         nQubits : Int) : Unit{
         for (problemSize in 1 .. nQubits){
             for (value in 0 .. 2^(problemSize - 1) - 1){
-                TestIfAllOnesTestHelper(OnesTest, IntAsBigInt(value), nQubits);
+                CheckIfAllOnesTestHelper(OnesTest, IntAsBigInt(value), nQubits);
             }
         }
     }
 
-    operation TestIfAllOnesReversibleTest() : Unit {
+    operation CheckIfAllOnesReversibleTest() : Unit {
         let nQubits = 10;
-        TestIfAllOnesReversibleTestHelper(TestIfAllOnes, nQubits);
+        CheckIfAllOnesReversibleTestHelper(CheckIfAllOnes, nQubits);
     }
 
 operation EqualLookupTestHelper( 

@@ -257,13 +257,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             using (isAllZeros = Qubit()){
                 (Controlled X)(controls, isAllZeros);
                 // Test if input is zero; it should remain zero
-                (Controlled TestIfAllZero)(controls, (xs!, isAllZeros));
+                (Controlled CheckIfAllZero)(controls, (xs!, isAllZeros));
                 ApplyToEachWrapperCA(X, ms!); // (1)
                 (Controlled AddIntegerNoCarry) ([isAllZeros], (ms, xs));
                 // We negate every term of the input iff controls dictate
                 (Controlled ApplyToEachWrapperCA)([isAllZeros], (X, xs!));
                 ApplyToEachWrapperCA(X, ms!); // cancels with (1)
-                (Controlled Adjoint TestIfAllZero)(controls, (xs!, isAllZeros));// clears isAllZeros
+                (Controlled Adjoint CheckIfAllZero)(controls, (xs!, isAllZeros));// clears isAllZeros
                 (Controlled X)(controls, isAllZeros);
             }
             
@@ -711,13 +711,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             let negModulus = 2L^Length(xs!) - modulus - 1L;
             using (isAllZeros = Qubit()){
                 //Test if the input is all-zeros
-                TestIfAllZero(xs!, isAllZeros);
+                CheckIfAllZero(xs!, isAllZeros);
                 //If all-zeros, then put the modulus in xs
                 (Controlled ApplyXorInPlaceL)([isAllZeros], (modulus, xs));
                 //Adds m' to x
                 AddConstant(negModulus, xs);
                 // If x=0, then we m' + m = all ones
-                TestIfAllOnes(xs!, isAllZeros);
+                CheckIfAllOnes(xs!, isAllZeros);
                 //(Controlled X)(xs!, (isAllZeros));
                 // Set to (m'+x)'
                 ApplyToEachWrapperCA(X, xs!);
@@ -726,10 +726,10 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
         controlled (controls, ...) {
             let negModulus = 2L^Length(xs!) - modulus - 1L;
             using (isAllZeros = Qubit()){
-                (Controlled TestIfAllZero)(controls, (xs!, isAllZeros));
+                (Controlled CheckIfAllZero)(controls, (xs!, isAllZeros));
                 (Controlled ApplyXorInPlaceL)([isAllZeros], (modulus, xs));
                 (Controlled AddConstant)(controls, (negModulus, xs));
-                TestIfAllOnes(controls+xs!, isAllZeros);
+                CheckIfAllOnes(controls+xs!, isAllZeros);
                 //(Controlled X)(controls+xs!, (isAllZeros));
                 (Controlled ApplyToEachWrapperCA)(controls, (X, xs!));
             }
@@ -2081,13 +2081,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 //bqubit is the top qubit in figure 9, between r and m_i
                 //First negated CNOT : is u even?
                 X(us![0]);
-                TestIfAllOnes(controls + [us![0]], aQubit);
+                CheckIfAllOnes(controls + [us![0]], aQubit);
                 //(Controlled CNOT)(controls, (us![0], aQubit));
                 X(us![0]);
                 //Second negated CNOT : Is v even but u odd?
                 X(vs![0]);
                 X(aQubit);
-                TestIfAllOnes(controls + [vs![0],aQubit], ms[indexm]);
+                CheckIfAllOnes(controls + [vs![0],aQubit], ms[indexm]);
                 //(Controlled CCNOT)(controls, (vs![0], aQubit, ms[indexm]));
                 X(aQubit);
                 X(vs![0]);
@@ -2104,8 +2104,8 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 CNOT(aQubit, bQubit);
                 CNOT(ms[indexm], bQubit);
                 X(bQubit);
-                TestIfAllOnes(controls + [carry, bQubit], aQubit);
-                TestIfAllOnes(controls + [carry, bQubit], ms[indexm]);
+                CheckIfAllOnes(controls + [carry, bQubit], aQubit);
+                CheckIfAllOnes(controls + [carry, bQubit], ms[indexm]);
                 // (Controlled X)(controls+[carry, bQubit], (aQubit));
                 // (Controlled X)(controls+[carry, bQubit], (ms[indexm]));
                 X(bQubit);
@@ -2208,11 +2208,11 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 //We use the top bit of rs to check
                 //This allows the operation to function without error for
                 //any input, including 0 (it will output "0" as an inverse)
-                TestIfAllZero(vsLE!, rs![nQubits]);
+                CheckIfAllZero(vsLE!, rs![nQubits]);
                 (Controlled SwapLE)([rs![nQubits]], (us, LittleEndian(ss![0..nQubits - 1])));
-                TestIfAllZero(vsLE!, rs![nQubits]);
+                CheckIfAllZero(vsLE!, rs![nQubits]);
                 //Run the rounds
-                QuantumWhile(nQubits, 2 * nQubits, _MontBitGCDRound(_, us, vsLE, rs, ss, ms), TestIfAllZero(vsLE!, _), halveop(_), counter);
+                QuantumWhile(nQubits, 2 * nQubits, _MontBitGCDRound(_, us, vsLE, rs, ss, ms), CheckIfAllZero(vsLE!, _), halveop(_), counter);
                 //Adjust r mod p 
                 //This leaves the top bit of r in an unknown state
                 (Adjoint AddConstant)(modulus, rs);
@@ -2271,7 +2271,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 secondCounter::Prepare();
                 let Decrementer = DummyIntegerWrapper((Adjoint counter::Increment), (), _);
                 let DecrementAndHalve = ConcatenateOperations(Decrementer, ModularDblMontgomeryForm, _, blankOutputs);
-                QuantumWhile(0, nQubits, DecrementAndHalve, OppositeTest(counter::Test, _), NoOp<Int>(_), secondCounter);
+                QuantumWhile(0, nQubits, DecrementAndHalve, OppositeCheck(counter::Test, _), NoOp<Int>(_), secondCounter);
                 //Since counterQubits are in the zero state, we swap them out to uncompute.
                 SwapLE(LittleEndian(counterQubits),LittleEndian(secondCounterQubits));
                 (Adjoint secondCounter::Prepare)();

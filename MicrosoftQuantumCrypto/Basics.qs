@@ -76,7 +76,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
             }
         }
         controlled (controls, ...){
-            TestIfAllOnes(controls + [control1, control2], target);
+            CheckIfAllOnes(controls + [control1, control2], target);
         }
         controlled adjoint auto;
     }
@@ -225,9 +225,9 @@ namespace Microsoft.Quantum.Crypto.Canon {
             // Compress controls: we only want a single control at one time
             if (Length(cs) > 1){
                 using (controlQubit = Qubit()){
-                    TestIfAllOnes(cs, controlQubit);
+                    CheckIfAllOnes(cs, controlQubit);
                     (Controlled EqualLookup)([controlQubit], (table, QuantumWrite, address));
-                    (Adjoint TestIfAllOnes)(cs, controlQubit);
+                    (Adjoint CheckIfAllOnes)(cs, controlQubit);
                 }
             } else {
 
@@ -825,7 +825,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
     function QubitsAsBasicCounter (register: Qubit[]) : Counter {
         let nQubits = Length(register);
         let incrementInternal = ConcatenateOperations(Increment, NoOp<Unit>, LittleEndian(register), _);
-        let test = OppositeTest(TestIfAllZero(register, _), _);
+        let test = OppositeCheck(CheckIfAllZero(register, _), _);
         let prepare = NoOp<Unit>;
         return Counter(register, 2^nQubits, prepare, incrementInternal, test);
     }
@@ -842,7 +842,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
     /// Assumed to be curried on whatever inputs it checks.
     /// ## result
     /// Qubit to be flipped.
-    operation OppositeTest (test : (Qubit => Unit is Ctl + Adj), result : Qubit) : Unit {
+    operation OppositeCheck (test : (Qubit => Unit is Ctl + Adj), result : Qubit) : Unit {
         body (...){
             X(result);
             test(result);
@@ -860,13 +860,13 @@ namespace Microsoft.Quantum.Crypto.Canon {
     /// Qubit register being checked against all-zeros
     /// ## output
     /// The qubit that will be flipped
-    operation TestIfAllZero(xs : Qubit[], output : Qubit) : Unit {
+    operation CheckIfAllZero(xs : Qubit[], output : Qubit) : Unit {
         body (...){
-            (Controlled TestIfAllZero)(new Qubit[0], (xs, output));
+            (Controlled CheckIfAllZero)(new Qubit[0], (xs, output));
         }
         controlled (controls, ...){
             ApplyToEachWrapperCA(X, xs);
-            (Controlled TestIfAllOnes)(controls, (xs, output));
+            (Controlled CheckIfAllOnes)(controls, (xs, output));
             ApplyToEachWrapperCA(X, xs);
         }
         adjoint controlled auto;
@@ -887,7 +887,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
     /// but this explicitly forms a binary tree to achieve a logarithmic
     /// depth. This means it borrows n-1 clean qubits.
     /// It also means that if xs has length 0, it flips the output
-    operation TestIfAllOnes(xs : Qubit[], output : Qubit) : Unit {
+    operation CheckIfAllOnes(xs : Qubit[], output : Qubit) : Unit {
         body (...){
             let nQubits = Length(xs);
             if (nQubits == 0){
@@ -909,7 +909,7 @@ namespace Microsoft.Quantum.Crypto.Canon {
             }
         }
         controlled (controls, ...){
-            TestIfAllOnes(controls + xs, output);
+            CheckIfAllOnes(controls + xs, output);
         }
         adjoint controlled auto;
     }

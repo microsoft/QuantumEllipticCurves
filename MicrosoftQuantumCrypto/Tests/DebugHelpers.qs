@@ -17,11 +17,6 @@ namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers
     open Microsoft.Quantum.Diagnostics;
 
 
-    operation BadlyFormedTest():Unit {
-        let x = 0;
-        let y = 1/x;
-    }
-
 
     operation DumpLittleEndian(xs : LittleEndian, message : String) : Unit{
         body(...){
@@ -40,13 +35,6 @@ namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers
         }
     }
 
-
-    operation AdjointTest(x:Qubit):Unit {
-        body (...){
-            X(x);
-        }
-        adjoint auto;
-    }
 
 
     operation BitDump(qubit:Qubit,message:String):Unit{

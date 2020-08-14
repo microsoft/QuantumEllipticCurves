@@ -13,8 +13,6 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     ///////                                                                             ////////
     ///////                          SPECIAL COUNTERS                                   ////////
     ///////                                                                             ////////
-    ///////                          DO NOT DISTRIBUTE                                  ////////
-    ///////       There are intellectual property issues that must be sorted out.       ////////
     ////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -71,7 +69,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
             (Controlled TestSpecialCounter)(new Qubit[0], (counter, target));
         }
         controlled(controls, ...){
-            (Controlled TestIfAllOnes)(controls, (counter, target));
+            (Controlled CheckIfAllOnes)(controls, (counter, target));
             (Controlled X)(controls, (target));
         }
         adjoint controlled auto;

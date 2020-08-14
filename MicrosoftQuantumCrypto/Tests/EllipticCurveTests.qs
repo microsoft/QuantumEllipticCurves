@@ -23,7 +23,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     /// ## point1
     /// The first point, which will be returned unchanged.
     /// ## point2
-    /// The second point which will be replaced with the sum.
+    /// The second point, which will be replaced with the sum.
     /// 
     /// # Operations
     /// This can test: 
@@ -178,7 +178,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ///
     /// # Summary
     /// Adds a fixed, classical elliptic curve point to
-    /// to a quantum point, replacing the value in the 
+    /// a quantum point, replacing the value in the 
     /// quantum registers.
     ///
     /// # Inputs
@@ -725,7 +725,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     }
 
     // Picks random points, but exhaustively checks all addresses
-    // within the specified window size
+    // within the specified window size.
     operation ShorAdditionWindowedExhaustiveTestHelper ( 
         SignedWindowedPointAdder : ( (ECPointClassical[], Qubit[], ECPointMontgomeryForm) => Unit is Ctl), 
         curve : ECCurveWeierstrassClassical, 
@@ -756,7 +756,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
 
     // Picks random points, but exhaustively checks all addresses
-    // within the specified window size
+    // within the specified window size.
     operation ExhaustiveTestSignedWindowedShor() : Unit {
         let windowSize = 4;
         let pointAdder = SignedWindowedEllipticCurvePointAdditionLowWidth;
