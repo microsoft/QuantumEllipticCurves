@@ -143,7 +143,7 @@ namespace Quantum.ModularAddition
                     //Creates a new thread for each operation being estimated
                     var localControl = isControlled;
                     var localGates = allGates;
-                    // Thread onesThread = new Thread(() => BasicResourceTest<TestifAllOneTimingTest>(TestifAllOneTimingTest.Run, testSizes, localControl,
+                    // Thread onesThread = new Thread(() => BasicResourceTest<CheckIfAllOneTimingTest>(CheckIfAllOneTimingTest.Run, testSizes, localControl,
                     //       directory + "AllOnes", localGates, false));
                     // onesThread.Start();
                     Thread additionThread = new Thread(() => BasicResourceTest<AdditionTimingTest>(AdditionTimingTest.Run, testSizes, localControl,

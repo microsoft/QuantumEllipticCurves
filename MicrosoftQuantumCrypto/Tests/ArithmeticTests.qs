@@ -69,7 +69,7 @@ namespace Microsoft.Quantum.Crypto.Tests{
 
 
 
-    operation TestIfAllOnesTestHelper(
+    operation CheckIfAllOnesTestHelper(
         OnesTest : ((Qubit[], Qubit) => Unit is Ctl + Adj),
         testValue : BigInt,
         nQubits : Int
@@ -129,19 +129,19 @@ namespace Microsoft.Quantum.Crypto.Tests{
     }
 
 
-    operation TestIfAllOnesReversibleTestHelper(
+    operation CheckIfAllOnesReversibleTestHelper(
         OnesTest : ((Qubit[], Qubit) => Unit is Ctl + Adj),
         nQubits : Int) : Unit{
         for (problemSize in 1 .. nQubits){
             for (value in 0 .. 2^(problemSize - 1) - 1){
-                TestIfAllOnesTestHelper(OnesTest, IntAsBigInt(value), nQubits);
+                CheckIfAllOnesTestHelper(OnesTest, IntAsBigInt(value), nQubits);
             }
         }
     }
 
-    operation TestIfAllOnesReversibleTest() : Unit {
+    operation CheckIfAllOnesReversibleTest() : Unit {
         let nQubits = 10;
-        TestIfAllOnesReversibleTestHelper(TestIfAllOnes, nQubits);
+        CheckIfAllOnesReversibleTestHelper(CheckIfAllOnes, nQubits);
     }
 
 operation EqualLookupTestHelper( 
@@ -400,55 +400,6 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
             for( summand2 in 0 .. 2^numberOfQubits - 1 ) {
                 IntegerAdderTestHelper(IntegerAdderToTest, IntAsBigInt(summand1), IntAsBigInt(summand2), numberOfQubits);
             }
-        }
-    }
-
-    operation RippleCarryAdderDTest () : Unit {
-        let numberOfQubits = 7;
-        let summand1 = 127L;
-        let summand2 = 17L;
-        IntegerAdderTestHelper(RippleCarryAdderD, summand1, summand2, numberOfQubits);
-    }
-
-    operation RippleCarryAdderDExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 3..6) {
-            IntegerAdderExhaustiveTestHelper (RippleCarryAdderD, numberOfQubits);
-        }
-    }
-
-    operation RippleCarryAdderDReversibleTest () : Unit {
-        let numberOfQubits = 20;
-        let summand1 = 823709L; 
-        let summand2 = 88487L;  
-        IntegerAdderTestHelper(RippleCarryAdderD, summand1, summand2, numberOfQubits);
-    }
-
-    operation RippleCarryAdderCDKMExhaustiveTest () : Unit {
-        let numberOfQubits = 4;
-        IntegerAdderExhaustiveTestHelper (RippleCarryAdderCDKM, numberOfQubits);    
-    }
-
-   operation RippleCarryAdderCDKMReversibleTest () : Unit {
-        let numberOfQubits = 20;
-        let summand1 = 823709L; 
-        let summand2 = 88487L;  
-        IntegerAdderTestHelper(RippleCarryAdderCDKM, summand1, summand2, numberOfQubits);
-    }
-
-    operation RippleCarryAdderCDKMExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 3..6) {
-            IntegerAdderExhaustiveTestHelper (RippleCarryAdderCDKM, numberOfQubits); 
-        }
-    }
-
-    operation RippleCarryAdderTTKExhaustiveTest () : Unit {
-        let numberOfQubits = 4;
-        IntegerAdderExhaustiveTestHelper (RippleCarryAdderTTK, numberOfQubits);
-    }
-
-    operation RippleCarryAdderTTKExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..6){
-            IntegerAdderExhaustiveTestHelper (RippleCarryAdderTTK, numberOfQubits);
         }
     }
 
