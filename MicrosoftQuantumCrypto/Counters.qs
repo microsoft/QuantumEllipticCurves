@@ -6,7 +6,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Arithmetic;
     open Microsoft.Quantum.Diagnostics;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////

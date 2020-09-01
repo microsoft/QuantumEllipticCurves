@@ -1,175 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using Microsoft.Quantum.Simulation.Simulators.QCTraceSimulators;
-
-using FileHelpers; // csv parsing
-using System.Globalization;
-
 // Library that deals with making human-friendly the CSV tracer's output
-
-namespace cs
+namespace CommaSeparated
 {
-    [DelimitedRecord("\t")]
-    [IgnoreFirst(1)]
-    public class DepthCounterCSV
-    {
-        public string Name;
-        public string Variant;
-        public string Caller;
-        public string CallerVariant;
-        public long Count;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal DepthAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal DepthSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal? DepthVariance;
-        public long DepthSum;
-        public long DepthMin;
-        public long DepthMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal StartTimeAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal StartTimeSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))] // [FieldConverter(ConverterKind.Decimal, ".")]
-        public decimal? StartTimeVariance;
-        public long StartTimeSum;
-        public long StartTimeMin;
-        public long StartTimeMax;
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using FileHelpers; // csv parsing
+    using Microsoft.Quantum.Simulation.Simulators.QCTraceSimulators;
 
-    [DelimitedRecord("\t")]
-    [IgnoreFirst(1)]
-    public class WidthCounterCSV
-    {
-        public string Name;
-        public string Variant;
-        public string Caller;
-        public string CallerVariant;
-        public long Count;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal InputWidthAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal InputWidthSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal InputWidthVariance;
-        public long InputWidthSum;
-        public long InputWidthMin;
-        public long InputWidthMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ExtraWidthAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ExtraWidthSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ExtraWidthVariance;
-        public long ExtraWidthSum;
-        public long ExtraWidthMin;
-        public long ExtraWidthMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ReturnWidthAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ReturnWidthSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal ReturnWidthVariance;
-        public long ReturnWidthSum;
-        public long ReturnWidthMin;
-        public long ReturnWidthMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal BorrowedWidthAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal BorrowedWidthSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal BorrowedWidthVariance;
-        public long BorrowedWidthSum;
-        public long BorrowedWidthMin;
-        public long BorrowedWidthMax;
-    }
-
-    [DelimitedRecord("\t")]
-    [IgnoreFirst(1)]
-    public class OperationCounterCSV
-    {
-        public string Name;
-        public string Variant;
-        public string Caller;
-        public string CallerVariant;
-        public long Count;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal CNOTAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal CNOTSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal CNOTVariance;
-        public long CNOTSum;
-        public long CNOTMin;
-        public long CNOTMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal QubitCliffordAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal QubitCliffordSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal QubitCliffordVariance;
-        public long QubitCliffordSum;
-        public long QubitCliffordMin;
-        public long QubitCliffordMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal RAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal RSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal RVariance;
-        public long RSum;
-        public long RMin;
-        public long RMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal MeasureAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal MeasureSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal MeasureVariance;
-        public long MeasureSum;
-        public long MeasureMin;
-        public long MeasureMax;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal TAverage;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal TSecondMoment;
-        [FieldConverter(typeof(QDecimalConverter))]
-        public decimal TVariance;
-        public long TSum;
-        public long TMin;
-        public long TMax;
-}
-
-    public class QDecimalConverter : ConverterBase
-    {
-        public override object StringToField(string from)
-        {
-            if (from == "NaN")
-            {
-                return Convert.ToDecimal(-1);
-            }
-            else
-            {
-                return Decimal.Parse(from, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
-            }
-        }
-        public override string FieldToString(object fieldValue)
-        {
-            if (Convert.ToDecimal(fieldValue) == Convert.ToDecimal(-1))
-            {
-                return "NaN";
-            }
-            else
-            {
-                return ((decimal)fieldValue).ToString();
-            }
-        }
-    }
-    class DisplayCSV
+    public class DisplayCSV
     {
         public static void Depth(string csv, string line_name, bool all = false)
         {
@@ -256,7 +97,7 @@ namespace cs
             }
         }
 
-        public static void All(Dictionary<String, String> csv, string line_name, bool all = false)
+        public static void All(Dictionary<string, string> csv, string line_name, bool all = false)
         {
             // print results
             Depth(csv[MetricsCountersNames.depthCounter], line_name, all);
@@ -267,14 +108,16 @@ namespace cs
             Console.WriteLine();
         }
 
-         public static string CSV(Dictionary<String, String> csv, string line_name, bool display_header = false, string comment = "", bool all = false, string suffix = "")
+        public static string CSV(Dictionary<string, string> csv, string line_name, bool display_header = false, string comment = "", bool all = false, string suffix = "")
         {
-            string results = "";
+            string results = string.Empty;
+
             // print results
             if (display_header)
             {
                 results += "operation, CNOT count, 1-qubit Clifford count, T count, R count, M count, T depth, initial width, extra width, comment, \n";
             }
+
             results += $"{Environment.NewLine}{line_name}{suffix}, ";
             var countEngine = new FileHelperAsyncEngine<OperationCounterCSV>();
             using (countEngine.BeginReadString(csv[MetricsCountersNames.primitiveOperationsCounter]))
@@ -288,6 +131,7 @@ namespace cs
                     }
                 }
             }
+
             var depthEngine = new FileHelperAsyncEngine<DepthCounterCSV>();
             using (depthEngine.BeginReadString(csv[MetricsCountersNames.depthCounter]))
             {
@@ -300,6 +144,7 @@ namespace cs
                     }
                 }
             }
+
             var widthEngine = new FileHelperAsyncEngine<WidthCounterCSV>();
             using (widthEngine.BeginReadString(csv[MetricsCountersNames.widthCounter]))
             {
@@ -308,10 +153,11 @@ namespace cs
                 {
                     if (cust.Name == line_name || all)
                     {
-                        results +=$"{cust.InputWidthAverage}, {cust.ExtraWidthAverage}, ";
+                        results += $"{cust.InputWidthAverage}, {cust.ExtraWidthAverage}, ";
                     }
                 }
             }
+
             results += $"{comment}, ";
             return results;
         }

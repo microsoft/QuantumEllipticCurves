@@ -10,7 +10,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Math;
 
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.Crypto.Arithmetic;
     open Microsoft.Quantum.Crypto.Fp2Arithmetic;
 
