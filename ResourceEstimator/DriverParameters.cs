@@ -4,7 +4,7 @@
 namespace Quantum.ModularAddition
 {
     using System;
-    using Microsoft.Quantum.Crypto.Canon;
+    using Microsoft.Quantum.Crypto.Basics;
     using Microsoft.Quantum.Simulation.Simulators;
     using Microsoft.Quantum.Simulation.Simulators.QCTraceSimulators;
 

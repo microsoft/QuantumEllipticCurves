@@ -7,7 +7,7 @@ namespace Quantum.ModularAddition
     using System.Collections.Generic;
     using System.Threading;
     using CommaSeparated;
-    using Microsoft.Quantum.Crypto.Canon;
+    using Microsoft.Quantum.Crypto.Basics;
     using Microsoft.Quantum.ModularArithmetic.DebugHelpers;
     using Microsoft.Quantum.Simulation.Simulators;
     using Microsoft.Quantum.Simulation.Simulators.QCTraceSimulators;
@@ -484,7 +484,7 @@ namespace Quantum.ModularAddition
                 //     localGates,
                 //     true));
                 // fixedThread.Start();
-                
+
                 allGates = !allGates;
             }
         }
