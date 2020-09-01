@@ -12,7 +12,7 @@ namespace Microsoft.Quantum.Crypto.Tests{
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Math;
 	open Microsoft.Quantum.Crypto.Arithmetic;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
 
 
     operation CCNOTTestHelper(

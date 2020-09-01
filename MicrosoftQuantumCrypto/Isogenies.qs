@@ -9,7 +9,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Arrays;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.Crypto.ModularArithmetic;
     open Microsoft.Quantum.Crypto.Fp2Arithmetic;
 

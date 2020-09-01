@@ -8,7 +8,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Crypto.ModularArithmetic;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.Crypto.Arithmetic;
     open Microsoft.Quantum.ModularArithmetic.DebugHelpers;
 

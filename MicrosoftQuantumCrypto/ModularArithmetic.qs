@@ -9,7 +9,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Crypto.Arithmetic;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.ModularArithmetic.DebugHelpers;
 
 

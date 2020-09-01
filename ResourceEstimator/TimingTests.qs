@@ -7,7 +7,7 @@ namespace ModularArithmeticTimingTests
     open Microsoft.Quantum.Crypto.Fp2Arithmetic;
     open Microsoft.Quantum.Crypto.Isogenies;
     open Microsoft.Quantum.Intrinsic;
-    open Microsoft.Quantum.Crypto.Canon;
+    open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.Crypto.Arithmetic;
     open Microsoft.Quantum.Crypto.ModularArithmetic;
     open Microsoft.Quantum.Crypto.EllipticCurves;
