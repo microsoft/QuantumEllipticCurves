@@ -46,10 +46,13 @@ To run the estimator:
 
 `.\ResourceEstimator\bin\<CONFIG>\netcoreapp3.1\ResourceEstimator.exe`
 
+### Issue with estimating resources
+
+A problem with the ResourcesEstimator functionality in Q# has been found and reported in [Issue #192](https://github.com/microsoft/qsharp-runtime/issues/192). Currently, results may report independent lower bounds on depth and width that may not be simultaneously realizable in a quantum circuit. The Q# team has stated that they are working to resolve this issue.
+
 ## Contributors
 
 - Samuel Jaques
-+++ TODO: who else +++
 
 ## References
 
