@@ -3,29 +3,18 @@
 ## Release checklist
 
 - Run unit test and resource estimator for each cost metric; make sure everything passes
+- TimingTests.qs: Does it make sense to call these timing tests? Isn't it more like obtaining the estimates?
+
+  Rename "TimingTest" to "ResourceEstimateWrappers" everywhere? Or to "ResourceEstimation", maybe just "Estimates" in some places?
+
 - Review README.md's (build/install) instructions
-- Get rid of the isogeny-related content? (MicrosoftQuantumCrypto:Isogenies.qs, IsogenyTests.qs, SIKE stuff in TimingTests.qs) **Done:** We are going to keep everything.
-- Get rid of failing unit tests (RippleCarryAdderCDKMExhaustiveReversibleTest, RippleCarryAdderCDKMExhaustiveTest, RippleCarryAdderCDKMReversibleTest) because we don't use the corresponding adder? **Done:** CDKM adder has been fixed.
-- Remove tests for RippleCarryAdderD, RippleCarryAdderCDKM and RippleCarryAdderTTK as they are tested in the standard libraries. **Done:** Those tests have been removed.
-- Update to the newest QDK and Standard Libraries again. They changed already.
-- @Christian: do you think we can get rid of those warnings?
 - when ready, copy `dev` content to `main`, and make project public
 
-## After release?
+## After release
 
 - Add tests for the adjoint operations.
-
-## Canon.qs
-
-- Rename the file to something other than Canon.qs. 
-    
-    (**Done:** Using Basics.qs for now.)
-
-- Make IsTestable() and CostMetric() compile options?
-
-- FakeOpWithT, FakeOpNoT: This does not seem to be used anywhere. **Done:** Removed them for now. Was probably used by Fernando to experiment with weird behavior.
-
-- Low-T AND and CCNOT gates. Some are now in the standard libraries.
+- Update to the newest QDK and Standard Libraries again?
+- In Basics.qs: Low-T AND and CCNOT gates. Some are now in the standard libraries.
 
     [12:02 AM] Mathias Soeken
     For the code you are referring to:
@@ -56,20 +45,4 @@
 
     The above should be taken into account. AND gates can be replaced by those gates from the standard libraries.
 
-- OppositeTest: Should this be renamed? It sounds like a Test operation, but maybe it's better to call it OppositeCheck **Done:** Renamed to OppositeCheck, also renamed TestIfAllZero to CheckIfAllZero and TestIfAllOnes to CheckIfAllOnes.
 
-## Isogenies.qs
-
-The current plan is to not release this in the first go. It should be relatively easy to release it once the elliptic curve library is out. But we should first write a paper to go with it.
-
-We should leave it in here and make it at least compile with the rest (and possibly test some of it), but remove from the first release.
-
-**After talking with Sam we decided to release the isogeny functions right away. This will stay in now.**
-
-## DebugHelpers.qs
-
-Do we need BadlyFormedTest() and AdjointTest()? **Done:** Removed both.
-
-## TimingTests.qs
-
-Does it make sense to call these timing tests? Isn't it more like obtaining the estimates?
