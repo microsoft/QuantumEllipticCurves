@@ -204,17 +204,10 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     }
     operation Fp2MultiplyAndAddRandomTestHelper( Multiplier:((Fp2MontModInt,Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl),nQubits:Int,nTests:Int):Unit {
         for (roundnum in 0..nTests-1){
-            mutable modulus = RandomInt(2^(nQubits-2));
-            set modulus = Max([4 * modulus+3,3]);
-            let realx=RandomInt(modulus-1);
-            let realy=RandomInt(modulus-1);
-            let imagx=RandomInt(modulus-1);
-            let imagy=RandomInt(modulus-1);
-            let realz=RandomInt(modulus-1);
-            let imagz=RandomInt(modulus-1);
-            let xFp2 = Fp2ElementClassical(IntAsBigInt(modulus), IntAsBigInt(realx),IntAsBigInt(imagx));
-            let yFp2 = Fp2ElementClassical(IntAsBigInt(modulus), IntAsBigInt(realy),IntAsBigInt(imagy));
-            let zFp2 = Fp2ElementClassical(IntAsBigInt(modulus), IntAsBigInt(realz),IntAsBigInt(imagz));
+            let modulus = RandomFp2Modulus(nQubits);
+            let xFp2 = RandomFp2ElementClassical(modulus);
+            let yFp2 = RandomFp2ElementClassical(modulus);
+            let zFp2 = RandomFp2ElementClassical(modulus);
             Fp2MultiplyTestHelper( Multiplier, xFp2, yFp2, zFp2,nQubits );
         }
     }

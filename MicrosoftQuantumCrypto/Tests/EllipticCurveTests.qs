@@ -8,6 +8,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Math;
+    open Microsoft.Quantum.Random;
 
     open Microsoft.Quantum.Crypto.Basics;
     open Microsoft.Quantum.Crypto.Arithmetic;
@@ -116,13 +117,13 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 if (modulus % 4 == 3){//necessary for lazy point validation
                     for( curveround in 0 .. modulus - 1 ) {
                         //pick random elliptic curves
-                        let ca = RandomInt(modulus);
-                        let cb = RandomInt(modulus);
+                        let ca = DrawRandomInt(0,modulus - 1);
+                        let cb = DrawRandomInt(0,modulus - 1);
                         if ((4 * ca^3+27 * cb^2) % modulus != 0) {
                             for (pointround in 0 .. modulus - 1){
                                 //pick several points on the curve to test
-                                 let p1x = RandomInt(modulus);
-                                 let p1signint = RandomInt(2);
+                                 let p1x = DrawRandomInt(0,modulus - 1);
+                                 let p1signint = DrawRandomInt(0,1);
                                  mutable p1signbool = false;
                                  if (p1signint == 1){
                                      set p1signbool = true;
@@ -131,8 +132,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                                  //If the randomly chosen x coordinate is not on the curve, 
                                  //then it will return the identity, which has z=false
                                  if (cPoint1::z){
-                                     let p2x = RandomInt(modulus);
-                                     let p2signint = RandomInt(2);
+                                     let p2x = DrawRandomInt(0,modulus);
+                                     let p2signint = DrawRandomInt(0,1);
                                      mutable p2signbool = false;
                                      if (p2signint == 1){
                                          set p2signbool = true;
@@ -265,20 +266,20 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 if (modulus % 4 == 3){//necessary for lazy point validation
                     for( curveround in 0 .. modulus - 1 ) {
                         //pick random elliptic curves
-                        let ca = RandomInt(modulus);
-                        let cb = RandomInt(modulus);
+                        let ca = DrawRandomInt(0, modulus - 1);
+                        let cb = DrawRandomInt(0, modulus - 1);
                         if ((4 * ca^3+27 * cb^2) % modulus != 0) {
                             for (pointround in 0 .. modulus - 1){
                                 //pick several points on the curve to test
-                                 let p1x = RandomInt(modulus);
-                                 let p1signint = RandomInt(2);
+                                 let p1x = DrawRandomInt(0, modulus - 1);
+                                 let p1signint = DrawRandomInt(0, 1);
                                  mutable p1signbool = false;
                                  if (p1signint == 1){
                                      set p1signbool = true;
                                  }
                                 let cPoint1 = GetECPoint(IntAsBigInt(p1x), IntAsBigInt(ca), IntAsBigInt(cb), IntAsBigInt(modulus), p1signbool);
-                                let p2x = RandomInt(modulus);
-                                let p2signint = RandomInt(2);
+                                let p2x = DrawRandomInt(0, modulus - 1);
+                                let p2signint = DrawRandomInt(0, 1);
                                 mutable p2signbool = false;
                                 if (p2signint == 1){
                                     set p2signbool = true;
@@ -463,11 +464,11 @@ namespace Microsoft.Quantum.Crypto.Tests {
             for (idxTest in 0 .. nTests - 1){
                 mutable success = false;
                 repeat {
-                    let modulus = primes[nQubits - 1][RandomInt(nPrimes)]; 
+                    let modulus = primes[nQubits - 1][DrawRandomInt(0, nPrimes - 1)]; 
                     if (modulus % 4 == 3){//necessary for lazy point validation
                         //pick random elliptic curves
-                        let ca = RandomInt(modulus);
-                        let cb = RandomInt(modulus);
+                        let ca = DrawRandomInt(0, modulus - 1);
+                        let cb = DrawRandomInt(0, modulus - 1);
                         if ((4 * ca^3 + 27 * cb^2) % modulus != 0) {
                             //pick several points on the curve to test
                             mutable cPoint1 = ECPointClassical(0L, 0L, false, IntAsBigInt(modulus));
@@ -481,7 +482,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
                             //2) Where cPoint1=cPoint2 or cPoint1=-cpoint 2
                             //3) Where cpoint+cPoint2 = -cPoint1
                             if (cPoint2::z and cPoint1::x != cPoint2::x and cPoint3::x != cPoint1::x){
-                                let address = RandomInt(2 ^ addressSize - 1);
+                                let address = DrawRandomInt(0, 2 ^ addressSize - 1);
                                 mutable points = new ECPointClassical[2^addressSize];
                                 set points w/= address <- cPoint1;
                                 EllipticCurveWindowedPointAdditionTestHelper(WindowedPointAdder, points, cPoint2, address, addressSize, nQubits);
@@ -622,12 +623,12 @@ namespace Microsoft.Quantum.Crypto.Tests {
             for (idxTest in 0 .. nTests - 1){
                 mutable success = false;
                 repeat {
-                    let modulus = primes[nQubits - 1][RandomInt(nPrimes)]; 
+                    let modulus = primes[nQubits - 1][DrawRandomInt(0, nPrimes - 1)]; 
                     if (modulus % 4 == 3){//necessary for lazy point validation
                         //pick random elliptic curves
                         let bigModulus = IntAsBigInt(modulus);
-                        let ca = RandomInt(modulus);
-                        let cb = RandomInt(modulus);
+                        let ca = DrawRandomInt(0, modulus - 1);
+                        let cb = DrawRandomInt(0, modulus - 1);
                         if ((4 * ca^3 + 27 * cb^2) % modulus != 0) {
                             //pick several points on the curve to test
                             let curve = ECCurveWeierstrassClassical(IntAsBigInt(ca), IntAsBigInt(cb), IntAsBigInt(modulus));
@@ -639,7 +640,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
                             //1) Where p2x is not on the curve, so cPoint2 is the identity
                             //2) Where cPoint1=cPoint2 or cPoint1=-cpoint 2
                             //3) Where cpoint+cPoint2 = -cPoint1
-                            let address = RandomInt(2 ^ addressSize - 1);
+                            let address = DrawRandomInt(0, 2 ^ addressSize - 1);
                             mutable tablePoint = points[address % 2^(addressSize - 1)];
                             if ((address / 2^(addressSize - 1)) == 0){
                                 set tablePoint = points[2^(addressSize - 1) - address];
@@ -734,7 +735,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         windowSize : Int
     ) : Unit {
         let nQubits = BitSizeL(curve::modulus);
-        let startWindow = RandomInt(nQubits);
+        let startWindow = DrawRandomInt(0, nQubits - 1);
         let startPoint = MultiplyClassicalECPoint(generator, curve, 2L^startWindow);
         let identity = ECPointClassical(0L, 0L, false, curve::modulus);
         let points = [identity] + PointTable(startPoint, startPoint, curve, windowSize - 1);
@@ -798,9 +799,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         
         for (idxTest in 0 .. nTests - 1){
             Message($"    Prepping test {idxTest} of {nTests}");
-            let startWindow = RandomInt(nQubits);
+            let startWindow = DrawRandomInt(0, nQubits - 1);
             let startPoint = MultiplyClassicalECPoint(generator, curve, 2L^startWindow);
-            let address = RandomInt(2 ^ windowSize);
+            let address = DrawRandomInt(0, 2 ^ windowSize - 1);
             let identity = ECPointClassical(0L, 0L, false, curve::modulus);
             let points = [identity] + PointTable(startPoint, startPoint, curve, windowSize - 1);
 

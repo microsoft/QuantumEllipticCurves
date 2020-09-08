@@ -864,19 +864,15 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     operation ECPointMontgomeryXZPointDoublerRandomTestHelper(PointDoubler : ((ECPointMontgomeryXZ,ECCoordsMontgomeryFormAPlusC,ECPointMontgomeryXZ)=>Unit is Ctl),
         nQubits : Int,nTests : Int) : Unit {
         for (roundnum in 0..nTests - 1){
-            mutable modulus = RandomInt(2^(nQubits - 2));
-            // It's not strictly necessary to make elemenets
-            // congruent to 3 mod 4 since the moduli are not prime
-            // but otherwise it will trigger the exception when 
-            // constructing Fp2 elements
-            set modulus = Max([4*modulus + 3,3]);
+            let modulus = RandomFp2Modulus(nQubits);
+
             let point = ECPointMontgomeryXZClassical(
-                Fp2ElementClassical(IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(modulus)),
-                Fp2ElementClassical(IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(modulus))
+                RandomFp2ElementClassical(modulus),
+                RandomFp2ElementClassical(modulus)
             );
             let curve = ECCoordsMontgomeryFormAPlusCClassical(
-                Fp2ElementClassical(IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(modulus)),
-                Fp2ElementClassical(IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(RandomInt(modulus - 1)),IntAsBigInt(modulus))
+                RandomFp2ElementClassical(modulus),
+                RandomFp2ElementClassical(modulus)
             );
             EllipticCurveMontgomeryFormXZPointDoublingTestHelper(PointDoubler,point,curve,nQubits);
         }
@@ -1652,7 +1648,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                 //Start with random P
                 let point = ECPointMontgomeryXZClassical(xFp2, zFp2);
                 
-                let nDoublings = Max([RandomInt(nQubits),1]);
+                let nDoublings = Max([Microsoft.Quantum.Random.DrawRandomInt(0, nQubits - 1),1]);
                 IteratedPointDoublingTestHelper(IteratedDoubler, curve, point, nDoublings, nQubits);
                 set idxTest = idxTest + 1;
             }

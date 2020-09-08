@@ -214,7 +214,7 @@ operation EqualLookUpExhaustiveTestHelper(
     for (i in 1 .. 2 ^ addressSize - 1){
         set bigTable = bigTable + [IntAsBigInt(i)];
     }
-    let address = RandomInt(2 ^ addressSize);
+    let address = Microsoft.Quantum.Random.DrawRandomInt(0, 2 ^ addressSize - 1);
     EqualLookupTestHelper(LookUp, bigTable, address, addressSize);
 }
 

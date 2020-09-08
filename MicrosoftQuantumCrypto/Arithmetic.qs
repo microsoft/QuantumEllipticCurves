@@ -803,7 +803,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         controlled (controls, ...){
             CNOT(previousCarry, xQubit);
             (Controlled CNOT)(controls, (previousCarry, yQubit));
-            AND(xQubit, yQubit, nextCarry);
+            AndWrapper(xQubit, yQubit, nextCarry);
             CNOT(previousCarry, nextCarry);
         }
         controlled adjoint auto;
@@ -843,7 +843,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         }
         controlled (controls, ...){
             CNOT(previousCarry, nextCarry);
-            (Adjoint AND)(xQubit, yQubit, nextCarry);
+            (Adjoint AndWrapper)(xQubit, yQubit, nextCarry);
             CNOT(previousCarry, xQubit);
             (Controlled CNOT)(controls, (xQubit, yQubit));
         }
@@ -893,7 +893,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             }
             else {
                 using (carries = Qubit[nQubits]){
-                    AND(xs![0], ys![0], carries[0]);
+                    AndWrapper(xs![0], ys![0], carries[0]);
                     for (idx in 1..nQubits - 1){
                         (Controlled _CDKMGBlockForward)(controls, (carries[idx - 1], xs![idx], ys![idx], carries[idx]));
                     }
@@ -903,7 +903,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
                     for (idx in (nQubits - 1)..(-1)..1){
                         (Controlled _CDKMGBlockBackward)(controls, (carries[idx - 1], xs![idx], ys![idx], carries[idx]));
                     }
-                    (Adjoint AND)(xs![0], ys![0], carries[0]);
+                    (Adjoint AndWrapper)(xs![0], ys![0], carries[0]);
                     (Controlled CNOT)(controls, (xs![0], ys![0]));
                 }
             }
@@ -1009,12 +1009,12 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             let nQubits = Length(xs!);
             if (nQubits == 1){
                 X(ys![0]);
-                (Controlled AND)(controls, (xs![0], ys![0], carry));
+                (Controlled AndWrapper)(controls, (xs![0], ys![0], carry));
                 X(ys![0]);
             } else {
                 ApplyToEachCA(X, ys!);
                 using (carries = Qubit[nQubits]){
-                    AND(xs![0], ys![0], carries[0]);
+                    AndWrapper(xs![0], ys![0], carries[0]);
                     for (idx in 1..nQubits - 1){
                         _CDKMGBlockForward (carries[idx - 1], xs![idx], ys![idx], carries[idx]);
                     }
@@ -1022,7 +1022,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
                     for (idx in (nQubits - 1)..(-1)..1){
                         (Adjoint _CDKMGBlockForward)(carries[idx - 1], xs![idx], ys![idx], carries[idx]);
                     }
-                    (Adjoint AND)(xs![0], ys![0], carries[0]);
+                    (Adjoint AndWrapper)(xs![0], ys![0], carries[0]);
                 }
                 ApplyToEachCA(Adjoint X, ys!);
             }
@@ -1074,10 +1074,10 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             // and do everything as an even bit-length addition
             if (Length(xs!) % 2 == 0){
                 using (bonusQubits = Qubit[1]){
-                    _CLAAdderImpl(CNOT, CCNOTWrapper, AND, false, xs! + [bonusQubits[0]], ys! + [carry], new Qubit[0]);
+                    _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs! + [bonusQubits[0]], ys! + [carry], new Qubit[0]);
                 }
             } else {
-                _CLAAdderImpl(CNOT, CCNOTWrapper, AND, true, xs!, ys!,  [carry]);
+                _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, true, xs!, ys!,  [carry]);
             }
         }
         controlled adjoint auto;
@@ -1118,7 +1118,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https : //arxiv.org/abs/quant - ph/0406142
     operation CarryLookAheadAdderNoCarry(xs : LittleEndian, ys : LittleEndian) : Unit {
         body(...){
-            _CLAAdderImpl(CNOT, CCNOTWrapper, AND, false, xs!, ys!, new Qubit[0]);
+            _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs!, ys!, new Qubit[0]);
         }
         controlled adjoint auto;
     }
@@ -1357,7 +1357,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
                 (Controlled _CompareLookAheadImpl)(controls,  (
                     CNOT,
                     CCNOTWrapper,
-                    AND,
+                    AndWrapper,
                     xs!, 
                     ys!, 
                     carry
@@ -1640,7 +1640,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             let logn = Floor(Lg(IntAsDouble(nQubits)));
             for (idxRound in 1..logn-1){
                 for (idxProps in 1..nQubits / (2 ^ idxRound) - 1){
-                        AND(propArrays[idxRound - 1][2 * idxProps], propArrays[idxRound - 1][2 * idxProps + 1], propArrays[idxRound][idxProps]);
+                        AndWrapper(propArrays[idxRound - 1][2 * idxProps], propArrays[idxRound - 1][2 * idxProps + 1], propArrays[idxRound][idxProps]);
                 }
             }
         }
@@ -1661,7 +1661,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
                     if (idxRound > lognMin1 - 1 or idxProps > (nQubits - 1) / (2 ^ idxRound) - 1){
                         (Controlled X)(controls + propArrays[idxRound-1][2 * idxProps..2 * idxProps + 1], (propArrays[idxRound][idxProps]));
                     } else {
-                        AND(propArrays[idxRound - 1][2 * idxProps], propArrays[idxRound - 1][2 * idxProps + 1], propArrays[idxRound][idxProps]);
+                        AndWrapper(propArrays[idxRound - 1][2 * idxProps], propArrays[idxRound - 1][2 * idxProps + 1], propArrays[idxRound][idxProps]);
                     }
                 }
             }

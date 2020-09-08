@@ -361,7 +361,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     operation RandomNonInfinityECPoint(a : BigInt, b : BigInt, modulus : BigInt) : ECPointClassical {
         mutable point = ECPointClassical(0L, 0L, false, modulus);
         repeat {
-            let signInt = RandomInt(2);
+            let signInt = Microsoft.Quantum.Random.DrawRandomInt(0,1);
             if (signInt == 0){
                 set point = GetECPoint(RandomBigInt(modulus), a, b, modulus, false);
             } else {

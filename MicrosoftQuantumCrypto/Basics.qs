@@ -5,11 +5,11 @@ namespace Microsoft.Quantum.Crypto.Basics {
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Arithmetic;
+    open Microsoft.Quantum.Random;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Crypto.Arithmetic;
-    open Microsoft.Quantum.OracleCompiler.Graphs.LowDepth;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,15 +168,13 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// This has the same action as CCNOTWrapper when the target is 0.
     /// This function is a wrapper that may use circuits optimized 
     /// for AND, rather than a general CCNOTWrapper.
-    operation AND(control1 : Qubit, control2 : Qubit, target : Qubit) : Unit {
+    operation AndWrapper(control1 : Qubit, control2 : Qubit, target : Qubit) : Unit {
         body (...){
-            //If using the low-depth verison
-            if (IsTestable()){
-                CCNOTWrapper(control1, control2, target);
+            if (IsMinimizeDepthCostMetric()){
+                ApplyLowDepthAnd(control1, control2, target);
             } else {
-                Microsoft.Quantum.OracleCompiler.Graphs.LowDepth.AND(control1, control2, target);
+                ApplyAnd(control1, control2, target);
             }
-            
         }
         controlled (controls, ...){
             (Controlled CCNOTWrapper)(controls, (control1, control2, target));
@@ -261,7 +259,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                             // Store 'all(controls) and not highBit' in q.
                             X(highBit);
                             if (Length(cs) > 0){
-                                 AND(cs[0], highBit, q);
+                                 AndWrapper(cs[0], highBit, q);
                             } else {
                                 CNOT(highBit, q);
                             }
@@ -282,7 +280,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
 
                             // Eager uncompute 'q = all(controls) and highBit'.
                             if (Length(cs) > 0){
-                                 (Adjoint AND)(cs[0], highBit, q);
+                                 (Adjoint AndWrapper)(cs[0], highBit, q);
                             } else {
                                 CNOT(highBit, q);
                             }
@@ -419,7 +417,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
         let nBits = 2 * BitSizeL(size);
         let maxInt = Min([nBits, 32]);
         for (idx  in 0..nBits/maxInt-1){
-            set randomBigInt = (2L^maxInt) * randomBigInt + IntAsBigInt(RandomInt(2^maxInt-1));
+            set randomBigInt = (2L^maxInt) * randomBigInt + IntAsBigInt(DrawRandomInt(0,2^maxInt-1));
         }
         return randomBigInt % size;
     }
@@ -1043,7 +1041,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             let nControls = Length(controlQubits);
             let nNewControls = Length(blankControlQubits);
             if (nControls == 2){
-                AND(controlQubits[0], controlQubits[1], output);
+                AndWrapper(controlQubits[0], controlQubits[1], output);
             } else {
                 Fact(nNewControls >= nControls/2, $"Cannot compress {nControls}
                     control qubits to {nNewControls} qubits without more ancilla");
@@ -1052,7 +1050,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                     {nNewControls} qubits because there are too few controls");
                 let compressLength = nControls - nNewControls;
                 for (idx in 0.. 2 .. nControls - 2){
-                    AND(controlQubits[idx], controlQubits[idx + 1], blankControlQubits[idx/2]);
+                    AndWrapper(controlQubits[idx], controlQubits[idx + 1], blankControlQubits[idx/2]);
                 }
                 if (nControls % 2 == 0){
                     CompressControls(blankControlQubits[0.. nControls/2 - 1], blankControlQubits[nControls/2 .. nNewControls - 1], output);
