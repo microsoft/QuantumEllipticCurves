@@ -20,7 +20,7 @@ namespace ModularArithmeticTimingTests
 
     operation ClearRegister(register:Qubit[]):Unit {
         for (idx in 0..Length(register)-1){
-            AssertProb([PauliZ],[register[idx]],Zero,0.0,"n/a",0.5);
+            AssertMeasurementProbability([PauliZ],[register[idx]],Zero,0.0,"n/a",0.5);
         }	
         ResetAll(register);
     }
