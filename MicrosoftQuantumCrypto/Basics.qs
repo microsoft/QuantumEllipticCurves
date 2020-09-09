@@ -1100,8 +1100,17 @@ namespace Microsoft.Quantum.Crypto.Basics {
             Fact(upperBound>lowerBound, $"Upper bound ({upperBound}) must be higher than lower bound ({lowerBound})");
             Fact(upperBound-lowerBound<counter::period, $"Counter's period is {counter::period} but may need to count {upperBound-lowerBound} iterations");
             using (mainControl = Qubit()){
-                for (roundNum in 0..lowerBound - 1){
-                    (Controlled Body)(controls, (roundNum));
+                // Use the main control if there are too many controls
+                if (Length(controls) > 1){
+                    CheckIfAllOnes(controls, mainControl);
+                    for (roundNum in 0..lowerBound - 1){
+                        (Controlled Body)([mainControl], (roundNum));
+                    }
+                    (Adjoint CheckIfAllOnes)(controls, mainControl);
+                } else {
+                    for (roundNum in 0..lowerBound - 1){
+                        (Controlled Body)(controls, (roundNum));
+                    }
                 }
                 for (roundNum in lowerBound..upperBound-1){
                     //Logic here : maincontrol is initially 0
