@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.Quantum.Sdk/0.12.20082513">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <PlatformTarget>x64</PlatformTarget>
+    <Configurations>Debug;Release</Configurations>
+    <RootNamespace>Microsoft.Quantum.Crypto.ResourceEstimator</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="filehelpers" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.12.20082513" />
+    <PackageReference Include="Microsoft.Quantum.Xunit" Version="0.12.20082513" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicrosoftQuantumCrypto\MicrosoftQuantumCrypto.csproj" />
+  </ItemGroup>
+
+</Project>

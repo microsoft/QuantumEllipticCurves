@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosoftQuantumCrypto", "MicrosoftQuantumCrypto\MicrosoftQuantumCrypto.csproj", "{E984B589-55A4-46BA-B656-28C1C1201567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceEstimator", "ResourceEstimator\ResourceEstimator.csproj", "{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E984B589-55A4-46BA-B656-28C1C1201567} = {E984B589-55A4-46BA-B656-28C1C1201567}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		MinimizeDepth|Any CPU = MinimizeDepth|Any CPU
+		MinimizeT|Any CPU = MinimizeT|Any CPU
+		MinimizeWidth|Any CPU = MinimizeWidth|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeDepth|Any CPU.ActiveCfg = MinimizeDepth|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeDepth|Any CPU.Build.0 = MinimizeDepth|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeT|Any CPU.ActiveCfg = MinimizeT|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeT|Any CPU.Build.0 = MinimizeT|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeWidth|Any CPU.ActiveCfg = MinimizeWidth|Any CPU
+		{E984B589-55A4-46BA-B656-28C1C1201567}.MinimizeWidth|Any CPU.Build.0 = MinimizeWidth|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeDepth|Any CPU.ActiveCfg = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeDepth|Any CPU.Build.0 = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeT|Any CPU.ActiveCfg = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeT|Any CPU.Build.0 = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeWidth|Any CPU.ActiveCfg = Release|Any CPU
+		{DC21FFF9-730B-4E5C-A437-9BEA928F68E5}.MinimizeWidth|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25D035F3-F750-4C78-9A34-4834D8B36D6B}
+	EndGlobalSection
+EndGlobal
