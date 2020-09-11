@@ -10,7 +10,7 @@ The code provides all operations to obtain resource estimates for quantum circui
 
 Operations for field arithmetic of quadratic extension fields, Montgomery curve arithmetic over such fields, and circuits for 2-isogeny computations are used to construct circuits for isogeny computations on supersingular elliptic curves as used in SIDH [3] and SIKE [4]. 
 
-The project depends on version 0.11.2006.403 of the [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit). It can be built using [Visual Studio](https://visualstudio.microsoft.com/) or the [.NET CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/).
+The project depends on version 0.12.20082513 of the [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit). It can be built using [Visual Studio](https://visualstudio.microsoft.com/) or the [.NET CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/).
 
 The code was developed by [Microsoft Research](http://research.microsoft.com/) for experimentation purposes.
 
