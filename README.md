@@ -53,6 +53,7 @@ A problem with the ResourcesEstimator functionality in Q# has been found and rep
 - Samuel Jaques (main contributor)
 - Michael Naehrig
 - Christian Paquin
+- Fernando Virdia
 
 ## References
 

@@ -1,5 +1,9 @@
 # Resource Estimator
 
+## Running Estimates
+This code will run resource estimates at numerous parameter sizes for all basic modular arithmetic operations, as well as elliptic curve operations for Shor's algorithm.
+
+To compare to the results from [Häner et al. 2020](https://eprint.iacr.org/2020/077), the outputs from the elliptic curve operations must be adjusted to account for optimal window sizes. The python script `shor_estimate.py` will do this. It will load the costs from `EllipticCurveEstimates/Low{Depth,T,Width}/Fixed-modulus-signed.csv` and adjust them based on different window sizes, trying all window sizes until it finds the lowest cost. It then writes the resource estimates from this optimal window size to `shor_low_{depth,T,width}_fixed.csv`. It also does the same for smaller window sizes, using hard-coded asymptotic formulas.
 
 ## Basic Logic
 The goal is to run different operations of the form `Int => Unit()`, where the integer parameter represents some parameter of the function. For example, one operation runs an addition circuit, adding numbers whose bitsize equals the parameter given. 
