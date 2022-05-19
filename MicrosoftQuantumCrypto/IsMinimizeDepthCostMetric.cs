@@ -1,3 +1,4 @@
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
@@ -15,7 +16,7 @@ namespace Microsoft.Quantum.Crypto.Basics
             {
             }
 
-            public override Func<QVoid, bool> Body => IsMinimizeDepthCostMetricFunc;
+           public override Func<QVoid, bool> __Body__ => IsMinimizeDepthCostMetricFunc;
 
             public static bool IsMinimizeDepthCostMetricFunc(QVoid qVoid)
             {
