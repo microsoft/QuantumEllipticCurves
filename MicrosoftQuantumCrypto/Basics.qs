@@ -94,7 +94,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     // /// - For the circuit diagram see Figure 1 on
     // ///   [ Page 3 of arXiv:1210.0974v2 ](https://arxiv.org/pdf/1210.0974v2.pdf#page=2)
     operation ccnot_T_depth_1 (control1 : Qubit, control2 : Qubit, target : Qubit) : Unit is Adj + Ctl {
-        using (auxillaryRegister = Qubit[4]) {
+        use auxillaryRegister = Qubit[4] {
 
             // apply UVU† where U is outer circuit and V is inner circuit
             ApplyWithCA(TDepthOneCCNOTOuterCircuit, TDepthOneCCNOTInnerCircuit, auxillaryRegister + [target, control1, control2]);
@@ -214,7 +214,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// Craig Gidney. 2019. "Windowed Quantum Arithmetic", https://arxiv.org/abs/1905.07682
     operation EqualLookup<'T> (table: 'T[], QuantumWrite : (('T) => Unit is Ctl + Adj), address: LittleEndian) : Unit {
         body (...) {
-            Controlled EqualLookup(new Qubit[0], (table, QuantumWrite, address));
+            Controlled EqualLookup([], (table, QuantumWrite, address));
         }
         controlled (cs, ...) {
             if (Length(table) == 0) {
@@ -222,7 +222,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             }
             // Compress controls: we only want a single control at one time
             if (Length(cs) > 1){
-                using (controlQubit = Qubit()){
+                use controlQubit = Qubit() {
                     CheckIfAllOnes(cs, controlQubit);
                     (Controlled EqualLookup)([controlQubit], (table, QuantumWrite, address));
                     (Adjoint CheckIfAllOnes)(cs, controlQubit);
@@ -255,7 +255,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                         let h = 1 <<< (Length(address!) - 1);
                         let lowTable = table[0..h-1];
                         let highTable = table[h..Length(table)-1];
-                        using (q = Qubit()) {
+                        use q = Qubit() {
                             // Store 'all(controls) and not highBit' in q.
                             X(highBit);
                             if (Length(cs) > 0){
@@ -290,7 +290,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             }
         }
         adjoint (...) {
-            (Controlled EqualLookup)(new Qubit[0], (table, (Adjoint QuantumWrite), address));
+            (Controlled EqualLookup)([], (table, (Adjoint QuantumWrite), address));
         }
         controlled adjoint (controls, ...){
             (Controlled EqualLookup)(controls, (table, (Adjoint QuantumWrite), address));
@@ -394,8 +394,8 @@ namespace Microsoft.Quantum.Crypto.Basics {
         let nPartitions = length/size;
         Fact((Length(array) % size) == 0, $"Cannot evenly partition array of length
             {Length(array)} into pieces of size {size}.");
-        mutable returnArray = new 'T[][nPartitions];
-        for (idx in 0.. nPartitions - 1){
+        mutable returnArray = [array, size = nPartitions];
+        for idx in 0.. nPartitions - 1 {
             set returnArray w/= idx <- array[size * idx .. size * (idx + 1) - 1];
         }
         return returnArray;
@@ -416,7 +416,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
         mutable randomBigInt = 0L;
         let nBits = 2 * BitSizeL(size);
         let maxInt = Min([nBits, 32]);
-        for (idx  in 0..nBits/maxInt-1){
+        for idx  in 0..nBits/maxInt-1 {
             set randomBigInt = (2L^maxInt) * randomBigInt + IntAsBigInt(DrawRandomInt(0,2^maxInt-1));
         }
         return randomBigInt % size;
@@ -521,7 +521,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             secondOp(secondInputs);
         }
         controlled (controls,...){
-            using (innerControl = Qubit()){
+            use innerControl = Qubit() {
                 (Controlled X)(controls, (innerControl));
                 (Controlled firstOp)(controls, (firstInputs));
                 (Controlled secondOp)([innerControl], (secondInputs));
@@ -544,7 +544,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     function HammingWeightL(value : BigInt) : Int {
         let valArray = BigIntAsBoolArray(value);
         mutable valHamWeight = 0;
-        for (idxVal in 0..Length(valArray)-1){
+        for idxVal in 0..Length(valArray)-1 {
             if (valArray[idxVal]){
                 set valHamWeight = valHamWeight+1;
             }
@@ -565,7 +565,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     function HammingWeightI(value : Int) : Int {
         let valArray = IntAsBoolArray(value, BitSizeI(value));
         mutable valHamWeight = 0;
-        for (idxVal in 0..Length(valArray)-1){
+        for idxVal in 0..Length(valArray)-1 {
             if (valArray[idxVal]){
                 set valHamWeight = valHamWeight+1;
             }
@@ -593,10 +593,10 @@ namespace Microsoft.Quantum.Crypto.Basics {
         }
         controlled (controls, ...){
             let nQubits=Length(qubitArray);
-            using (singleControls = Qubit[nQubits]){
+            use singleControls = Qubit[nQubits] {
                 (Controlled X)(controls, singleControls[0]);
                 FanoutToZero(singleControls[0], singleControls[1..nQubits - 1]);
-                for (idx in 0..nQubits - 1){
+                for idx in 0..nQubits - 1 {
                     (Controlled op)([singleControls[idx]], (qubitArray[idx]));
                 }
                 (Adjoint FanoutToZero)(singleControls[0], singleControls[1..nQubits - 1]);
@@ -663,9 +663,9 @@ namespace Microsoft.Quantum.Crypto.Basics {
                 if (nQubits == 2){
                     (Controlled SWAP)(controls, (xs[0], xs[1]));
                 } elif (nQubits > 2){
-                    using (singleControls = Qubit[nControls]){
+                    use singleControls = Qubit[nControls] {
                         (Controlled FanoutControls)(controls,(singleControls));
-                        for (idxSwap in 0..nControls - 1){
+                        for idxSwap in 0..nControls - 1 {
                             (Controlled SWAP)([singleControls[idxSwap]], (xs[idxSwap], xs[nQubits - 1 - idxSwap]));
                         }
                         (Controlled Adjoint FanoutControls)(controls,(singleControls));
@@ -754,7 +754,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             Fact (nCopyQubits % nQubits == 0, $"Cannot fanout {nQubits} qubits
                 to {nCopyQubits} qubits because it is not an even multiple");
         
-            for (idx in 0.. Length(register) - 1){
+            for idx in 0.. Length(register) - 1 {
                 FanoutToZero(register[idx], outputRegister[idx .. nQubits .. nCopyQubits - 1]);
             }
         }
@@ -763,9 +763,9 @@ namespace Microsoft.Quantum.Crypto.Basics {
             let nCopyQubits = Length(outputRegister);
             Fact (nCopyQubits % nQubits == 0, $"Cannot fanout {nQubits} qubits
                 to {nCopyQubits} qubits because it is not an even multiple");
-            using (singleControls = Qubit[nQubits]){
+            use singleControls = Qubit[nQubits] {
                 (Controlled FanoutControls)(controls, (singleControls));
-                for (idx in 0.. Length(register) - 1){
+                for idx in 0.. Length(register) - 1 {
                     (Controlled FanoutToZero)([singleControls[idx]], (register[idx], outputRegister[idx .. nQubits .. nCopyQubits - 1]));
                 }
                 (Controlled Adjoint FanoutControls)(controls, (singleControls));
@@ -860,7 +860,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// The qubit that will be flipped
     operation CheckIfAllZero(xs : Qubit[], output : Qubit) : Unit {
         body (...){
-            (Controlled CheckIfAllZero)(new Qubit[0], (xs, output));
+            (Controlled CheckIfAllZero)([], (xs, output));
         }
         controlled (controls, ...){
             ApplyToEachWrapperCA(X, xs);
@@ -898,7 +898,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                 if (IsMinimizeWidthCostMetric()) {
                     LinearMultiControl(xs, output);
                 } else { //high width but log-depth and small T-count
-                    using ((spareControls, ancillaOutput) = (Qubit[nQubits - 2], Qubit())){
+                    use (spareControls, ancillaOutput) = (Qubit[nQubits - 2], Qubit()) {
                         CompressControls(xs, spareControls, ancillaOutput);
                         CNOT(ancillaOutput, output);
                         (Adjoint CompressControls)(xs, spareControls, ancillaOutput);
@@ -938,21 +938,21 @@ namespace Microsoft.Quantum.Crypto.Basics {
             } elif (nQubits == 2){
                 CCNOTWrapper(controlQubits[0], controlQubits[1], output);
             } elif (nQubits <= 4){
-                borrowing (ancillaControl = Qubit()){
+                borrow ancillaControl = Qubit() {
                     LinearMultiControl(controlQubits[0.. nQubits -2], ancillaControl);
                     CCNOTWrapper(controlQubits[nQubits - 1], ancillaControl, output);
                     LinearMultiControl(controlQubits[0.. nQubits -2], ancillaControl);
                     CCNOTWrapper(controlQubits[nQubits - 1], ancillaControl, output);
                 }
             } elif (nQubits == 5) {
-                borrowing (ancillaControl = Qubit()){
+                borrow ancillaControl = Qubit() {
                     LinearMultiControl(controlQubits[0 .. nQubits - 3], ancillaControl);
                     LinearMultiControl(controlQubits[nQubits - 2 .. nQubits - 1] + [ancillaControl], output);
                     LinearMultiControl(controlQubits[0 .. nQubits - 3], ancillaControl);
                     LinearMultiControl(controlQubits[nQubits - 2 .. nQubits - 1] + [ancillaControl], output);
                 }
             } else {
-                borrowing (ancillaControl = Qubit()){
+                borrow ancillaControl = Qubit() {
                     let m = (nQubits + 1) / 2;
                     CascadeControl(controlQubits[0 .. m - 1], ancillaControl);
                     CascadeControl(controlQubits[m .. nQubits - 1] + [ancillaControl], output);
@@ -988,20 +988,20 @@ namespace Microsoft.Quantum.Crypto.Basics {
             if (nQubits <= 2){
                 LinearMultiControl(controlQubits, output);
             } else {
-                borrowing (ancillaControls = Qubit[nQubits - 2]){
+                borrow ancillaControls = Qubit[nQubits - 2] {
                     let ancillaTargets = [output] + ancillaControls;
-                    for (idx in 0 .. nQubits - 3){
+                    for idx in 0 .. nQubits - 3 {
                         CCNOTWrapper(controlQubits[idx], ancillaControls[idx], ancillaTargets[idx]);
                     }
                     CCNOTWrapper(controlQubits[nQubits - 2], controlQubits[nQubits -1], ancillaControls[nQubits - 3]);
-                    for (idx in nQubits - 3 .. (-1) .. 0){
+                    for idx in nQubits - 3 .. (-1) .. 0 {
                         CCNOTWrapper(controlQubits[idx], ancillaControls[idx], ancillaTargets[idx]);
                     }
-                    for (idx in 1 .. nQubits - 3){
+                    for idx in 1 .. nQubits - 3 {
                         CCNOTWrapper(controlQubits[idx], ancillaControls[idx], ancillaTargets[idx]);
                     }
                     CCNOTWrapper(controlQubits[nQubits - 2], controlQubits[nQubits -1], ancillaControls[nQubits - 3]);
-                    for (idx in nQubits - 3 .. (-1) .. 1){
+                    for idx in nQubits - 3 .. (-1) .. 1 {
                         CCNOTWrapper(controlQubits[idx], ancillaControls[idx], ancillaTargets[idx]);
                     }
                 }
@@ -1049,7 +1049,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                     $"Cannot compress {nControls} control qubits into
                     {nNewControls} qubits because there are too few controls");
                 let compressLength = nControls - nNewControls;
-                for (idx in 0.. 2 .. nControls - 2){
+                for idx in 0.. 2 .. nControls - 2 {
                     AndWrapper(controlQubits[idx], controlQubits[idx + 1], blankControlQubits[idx/2]);
                 }
                 if (nControls % 2 == 0){
@@ -1094,25 +1094,25 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// Test again. 
     operation QuantumWhile(lowerBound : Int, upperBound : Int, Body : ((Int)=>Unit is Ctl + Adj), test : ((Qubit)=>Unit is Ctl + Adj), Alternate : ((Int)=>Unit is Ctl + Adj), counter : Counter) : Unit{
         body (...){
-            (Controlled QuantumWhile)(new Qubit[0], (lowerBound, upperBound, Body, test, Alternate, counter));
+            (Controlled QuantumWhile)([], (lowerBound, upperBound, Body, test, Alternate, counter));
         }	
         controlled (controls, ...){
             Fact(upperBound>lowerBound, $"Upper bound ({upperBound}) must be higher than lower bound ({lowerBound})");
             Fact(upperBound-lowerBound<counter::period, $"Counter's period is {counter::period} but may need to count {upperBound-lowerBound} iterations");
-            using (mainControl = Qubit()){
+            use mainControl = Qubit() {
 	    	    // Use the main control if there are too many controls
 	    	    if (Length(controls) > 1){
 		    	    CheckIfAllOnes(controls, mainControl);
-			        for (roundNum in 0..lowerBound - 1){
+			        for roundNum in 0..lowerBound - 1 {
 			            (Controlled Body)([mainControl], (roundNum));
 			        }
 			        (Adjoint CheckIfAllOnes)(controls, mainControl);
 		        } else {
-	    	        for (roundNum in 0..lowerBound - 1){
+	    	        for roundNum in 0..lowerBound - 1 {
 			   	        (Controlled Body)(controls, (roundNum));
 			        }
 	           }
-	  	    for (roundNum in lowerBound..upperBound-1){
+	  	    for roundNum in lowerBound..upperBound-1 {
                     //Logic here : maincontrol is initially 0
                     //When the test does nothing and the counter is all 1s : 
                     //		It runs Body[idxRound], does not increment
@@ -1128,7 +1128,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
                     //Checks if the counter is non-start
                     counter::Test(mainControl);
                     //Fanout the main control to save depth
-                    using (extraControls = Qubit[2]){
+                    use extraControls = Qubit[2] {
                         CNOT(mainControl,extraControls[0]);
                         CNOT(extraControls[0],extraControls[1]);
                         //Runs the body if maincontrol is 0

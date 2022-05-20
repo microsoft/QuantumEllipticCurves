@@ -33,7 +33,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     ///		* AddFp2ElementMontgomeryForm
      operation Fp2AddTestHelper( Adder:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), summand1 : Fp2ElementClassical, summand2 : Fp2ElementClassical, nQubits : Int ) : Unit {
        // Bookkeeping and qubit allocation
-       using (register = Qubit[4 * nQubits]) {
+       use register = Qubit[4 * nQubits] {
             // Write to qubit registers
             mutable summand1Q = CreateFp2MontModInt(summand1,register[0..2 * nQubits-1]);
             mutable summand2Q = CreateFp2MontModInt(summand2,register[2 * nQubits..4 * nQubits-1]);
@@ -50,8 +50,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(summand2Q);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     //Write to qubit registers
                     set summand1Q = CreateFp2MontModInt(summand1,register[0..2 * nQubits-1]);
                     set summand2Q = CreateFp2MontModInt(summand2,register[2 * nQubits..4 * nQubits-1]);
@@ -89,7 +89,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     }
 
     operation Fp2AddRandomTestHelper( Adder:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), nQubits:Int, nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -123,7 +123,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     ///		* MulAndAddFp2ElementMontgomeryForm
      operation Fp2MultiplyTestHelper( Multiplier:((Fp2MontModInt,Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), multiplicand1 : Fp2ElementClassical, 
             multiplicand2 : Fp2ElementClassical, summand:Fp2ElementClassical, nQubits : Int ) : Unit {
-        using (register = Qubit[6 * nQubits]) {
+        use register = Qubit[6 * nQubits] {
             // Write to qubit register and create necessary variables
             mutable multiplicand1Q = CreateFp2MontModInt(multiplicand1,register[0..2 * nQubits-1]);
             mutable multiplicand2Q = CreateFp2MontModInt(multiplicand2,register[2 * nQubits..4 * nQubits-1]);
@@ -144,8 +144,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(outputQ);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     set multiplicand1Q = CreateFp2MontModInt(multiplicand1,register[0..2 * nQubits-1]);
                     set multiplicand2Q = CreateFp2MontModInt(multiplicand2,register[2 * nQubits..4 * nQubits-1]);
@@ -189,7 +189,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     }
 
     operation Fp2MultiplyAndXorRandomTestHelper( Multiplier:((Fp2MontModInt,Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl),nQubits:Int,nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -203,7 +203,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         Fp2MultiplyAndXorRandomTestHelper(MulAndXorFp2ElementMontgomeryForm,nQubits,nTests);
     }
     operation Fp2MultiplyAndAddRandomTestHelper( Multiplier:((Fp2MontModInt,Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl),nQubits:Int,nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -249,7 +249,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[6 * nQubits + nAncilla]){
+            use register = Qubit[6 * nQubits + nAncilla] {
                 let modulus = multiplier1::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
                 mutable actual1 = zeroFp2;
@@ -296,8 +296,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
                 set result = MeasureFp2MontModInt(resultQ);
                 Fact(IsEqualFp2Element(result, zeroFp2), $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         //Write to qubit registers
                         EncodeFp2MontModInt(multiplier1, multiplier1Q);
                         EncodeFp2MontModInt(multiplier2, multiplier2Q);
@@ -381,7 +381,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         nAncilla : Int, 
         nTests:Int
         ):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -423,7 +423,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         multiplicand2 : Fp2ElementClassical, 
         summand:Fp2ElementClassical, 
         nQubits : Int ) : Unit {
-        using (register = Qubit[4 * nQubits]) {
+        use register = Qubit[4 * nQubits] {
             // Write to qubit registers and create qubit variables
             mutable multiplicand2Q = CreateFp2MontModInt(multiplicand2,register[0 * nQubits..2 * nQubits-1]);
             mutable outputQ = CreateFp2MontModInt(summand,register[2 * nQubits..4 * nQubits-1]);
@@ -441,8 +441,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(outputQ);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     //Write to qubit registers
                     EncodeFp2MontModInt(multiplicand2, multiplicand2Q);
                     EncodeFp2MontModInt(summand, outputQ);
@@ -483,7 +483,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         Multiplier:((Fp2ElementClassical, Fp2MontModInt, Fp2MontModInt)=> Unit is Ctl),
         nQubits:Int,
         nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -531,7 +531,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[4 * nQubits + nAncilla]){
+            use register = Qubit[4 * nQubits + nAncilla] {
                 let ancillas = register[6 * nQubits .. 6 * nQubits + nAncilla - 1];
                 let ancillaLE = LittleEndian(ancillas);
                 mutable ancilla = 0L;
@@ -571,8 +571,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
                 set result = MeasureFp2MontModInt(resultQ);
                 Fact(IsEqualFp2Element(result, zeroFp2), $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeFp2MontModInt(multiplier2, multiplier2Q);
 
@@ -644,7 +644,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         nAncilla : Int, 
         nTests:Int
         ):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -677,7 +677,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     ///		* SquAndAddFp2ElementMontgomeryForm
      operation Fp2SquareTestHelper( Squarer:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), input : Fp2ElementClassical, 
              summand:Fp2ElementClassical, nQubits : Int ) : Unit {
-        using (register = Qubit[4 * nQubits]) {
+        use register = Qubit[4 * nQubits] {
             // Write to qubit registers and create variables
             mutable baseQ = CreateFp2MontModInt(input,register[0..2 * nQubits-1]);
             mutable outputQ = CreateFp2MontModInt(summand,register[2 * nQubits..4 * nQubits-1]);
@@ -695,8 +695,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(outputQ);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     set baseQ = CreateFp2MontModInt(input,register[0..2 * nQubits-1]);
                     set outputQ = CreateFp2MontModInt(summand,register[2 * nQubits..4 * nQubits-1]);
@@ -734,7 +734,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     }
 
     operation Fp2SquareAndXorRandomTestHelper( Squarer:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl),nQubits:Int,nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let zeroFp2 = Fp2ElementClassical(modulus, 0L,0L);
@@ -747,7 +747,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         Fp2SquareAndXorRandomTestHelper(SquAndXorFp2ElementMontgomeryForm,nQubits,nTests);
     }
     operation Fp2SquareAndAddRandomTestHelper( Squarer:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl),nQubits:Int,nTests:Int):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -786,7 +786,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         nAncilla : Int 
         ) : Unit {
         body (...) {
-            using (register = Qubit[4 * nQubits + nAncilla]){
+            use register = Qubit[4 * nQubits + nAncilla] {
                 // Bookkeeping and allocation
                 let modulus = input::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
@@ -827,8 +827,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
                 set result = MeasureFp2MontModInt(resultQ);
                 Fact(IsEqualFp2Element(result, zeroFp2), $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeFp2MontModInt(input, inputQ);
 
@@ -900,7 +900,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         nAncilla : Int, 
         nTests:Int
         ):Unit {
-        for (roundnum in 0..nTests-1){
+        for roundnum in 0..nTests-1 {
             let modulus = RandomFp2Modulus(nQubits);
             let xFp2 = RandomFp2ElementClassical(modulus);
             let yFp2 = RandomFp2ElementClassical(modulus);
@@ -931,7 +931,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     ///		* InvertAndAddFp2ElementMontgomeryForm
     operation Fp2InverseTestHelper( Inverter:((Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), input : Fp2ElementClassical, 
              summand:Fp2ElementClassical, nQubits : Int ) : Unit {
-        using (register = Qubit[4 * nQubits]) {
+        use register = Qubit[4 * nQubits] {
             // Write to qubit registers and create variables
             mutable baseQ = CreateFp2MontModInt(input,register[0..2 * nQubits-1]);
             mutable outputQ = CreateFp2MontModInt(summand,register[2 * nQubits..4 * nQubits-1]);
@@ -952,8 +952,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(outputQ);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     set baseQ = CreateFp2MontModInt(input,register[0..2 * nQubits-1]);
                     set outputQ = CreateFp2MontModInt(summand,register[2 * nQubits..4 * nQubits-1]);
@@ -1036,7 +1036,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
         nAncilla : Int 
         ) : Unit {
         body (...) {
-            using (register = Qubit[4 * nQubits + nAncilla]){
+            use register = Qubit[4 * nQubits + nAncilla] {
                 // Bookkeeping and qubit allocation
                 let modulus = input::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
@@ -1080,8 +1080,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
                 set result = MeasureFp2MontModInt(resultQ);
                 Fact(IsEqualFp2Element(result, zeroFp2), $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeFp2MontModInt(input, inputQ);
 
@@ -1189,7 +1189,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
     ///		* DivideAndAddFp2ElementMontgomeryForm
      operation Fp2DivideTestHelper( Divider:((Fp2MontModInt,Fp2MontModInt,Fp2MontModInt)=> Unit is Ctl), invertand : Fp2ElementClassical, 
             multiplicand : Fp2ElementClassical, summand:Fp2ElementClassical, nQubits : Int ) : Unit {
-        using (register = Qubit[6 * nQubits]) {
+        use register = Qubit[6 * nQubits] {
             // Write to qubit registers and create variables
             mutable invertandQ = CreateFp2MontModInt(invertand,register[0..2 * nQubits-1]);
             mutable multiplicandQ = CreateFp2MontModInt(multiplicand,register[2 * nQubits..4 * nQubits-1]);
@@ -1214,8 +1214,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Fp2Arithmetic {
             mutable result = MeasureFp2MontModInt(outputQ);
             Fact((expected::real == result::real) and (expected::imag == result::imag), $"Output: Expected {expected}, got {result}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     set invertandQ = CreateFp2MontModInt(invertand,register[0..2 * nQubits-1]);
                     set multiplicandQ = CreateFp2MontModInt(multiplicand,register[2 * nQubits..4 * nQubits-1]);

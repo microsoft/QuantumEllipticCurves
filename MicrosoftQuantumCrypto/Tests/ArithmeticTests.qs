@@ -21,7 +21,7 @@ namespace Microsoft.Quantum.Crypto.Tests{
         control2 : Bool,
         inputTarget : Bool
     ) : Unit {
-        using ((qControl1, qControl2, qTarget) = (Qubit(), Qubit(), Qubit())){
+        use (qControl1, qControl2, qTarget) = (Qubit(), Qubit(), Qubit()) {
             let expected = Xor(control1 and control2, inputTarget);
 
             mutable mControl1 = false;
@@ -51,9 +51,9 @@ namespace Microsoft.Quantum.Crypto.Tests{
         mutable control1 = false;
         mutable control2 = false;
         mutable target = false;
-        for (idx1 in 0..1){
-           for (idx2 in 0..1){
-                for (idx3 in 0..1){
+        for idx1 in 0..1 {
+           for idx2 in 0..1 {
+                for idx3 in 0..1 {
 
                     set target = not target;
                 }
@@ -74,7 +74,7 @@ namespace Microsoft.Quantum.Crypto.Tests{
         testValue : BigInt,
         nQubits : Int
     ) : Unit {
-        using ((valueQubits, output) = (Qubit[nQubits], Qubit())){
+        use (valueQubits, output) = (Qubit[nQubits], Qubit()) {
             let expected = (2L^nQubits - 1L == testValue) ? One | Zero;
             let qValue = LittleEndian(valueQubits);
             mutable actualValue = 0L;
@@ -92,8 +92,8 @@ namespace Microsoft.Quantum.Crypto.Tests{
             Reset(output);
             Fact(actualOutput == expected, $"On input {testValue}, expected {expected}, got {actualOutput}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                      //Write to qubit registers
                      ApplyXorInPlaceL(testValue, qValue);
 
@@ -132,8 +132,8 @@ namespace Microsoft.Quantum.Crypto.Tests{
     operation CheckIfAllOnesReversibleTestHelper(
         OnesTest : ((Qubit[], Qubit) => Unit is Ctl + Adj),
         nQubits : Int) : Unit{
-        for (problemSize in 1 .. nQubits){
-            for (value in 0 .. 2^(problemSize - 1) - 1){
+        for problemSize in 1 .. nQubits {
+            for value in 0 .. 2^(problemSize - 1) - 1 {
                 CheckIfAllOnesTestHelper(OnesTest, IntAsBigInt(value), nQubits);
             }
         }
@@ -151,7 +151,7 @@ operation EqualLookupTestHelper(
     addressSize : Int
 ) : Unit {
     body (...) {
-        using ((addressQubits, outputQubits) = (Qubit[addressSize], Qubit[addressSize])){
+        use (addressQubits, outputQubits) = (Qubit[addressSize], Qubit[addressSize]) {
             // Bookkeeping and qubit allocation
             let qAddress = LittleEndian(addressQubits);
             let qValue = LittleEndian(outputQubits);
@@ -170,8 +170,8 @@ operation EqualLookupTestHelper(
             set readAddress = MeasureBigInteger(qAddress);
             Fact(readAddress == IntAsBigInt(address), $"Address: Expected {address}, got {readAddress}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     //write to qubit registers
                     ApplyXorInPlaceL(IntAsBigInt(address), qAddress);
 
@@ -211,7 +211,7 @@ operation EqualLookUpExhaustiveTestHelper(
     addressSize : Int
 ) : Unit {
     mutable bigTable = [0L];
-    for (i in 1 .. 2 ^ addressSize - 1){
+    for i in 1 .. 2 ^ addressSize - 1 {
         set bigTable = bigTable + [IntAsBigInt(i)];
     }
     let address = Microsoft.Quantum.Random.DrawRandomInt(0, 2 ^ addressSize - 1);
@@ -255,7 +255,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 
  operation IntegerAdderTestHelper( IntegerAdderToTest : ( (LittleEndian, LittleEndian, Qubit) => Unit is Ctl + Adj), summand1 : BigInt, summand2 : BigInt, numberOfQubits : Int ) : Unit {
         body (...) {
-            using (register = Qubit[2*numberOfQubits + 1]) {
+            use register = Qubit[2*numberOfQubits + 1] {
 				// Bookkeeping and qubit allocation
                 mutable actual_carry = 0L;
                 mutable actual1 = 0L;
@@ -308,8 +308,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
                 set measured_carry = MResetZ(carry);
                 Fact(difference_carry == ResultAsBool(measured_carry), $"Difference Carry: Expected {difference_carry}, got {measured_carry}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
 						// Write to qubit registers
                         ApplyXorInPlaceL(summand1, summand1LE);
                         ApplyXorInPlaceL(summand2, summand2LE);
@@ -396,8 +396,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
  
     operation IntegerAdderExhaustiveTestHelper (IntegerAdderToTest : ( (LittleEndian, LittleEndian, Qubit) => Unit is Ctl + Adj), numberOfQubits : Int) : Unit {
-        for( summand1 in 0 .. 2^numberOfQubits - 1 ) {
-            for( summand2 in 0 .. 2^numberOfQubits - 1 ) {
+        for  summand1 in 0 .. 2^numberOfQubits - 1  {
+            for  summand2 in 0 .. 2^numberOfQubits - 1  {
                 IntegerAdderTestHelper(IntegerAdderToTest, IntAsBigInt(summand1), IntAsBigInt(summand2), numberOfQubits);
             }
         }
@@ -410,7 +410,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	operation CarryLookAheadAdderExhaustiveReversibleTest (): Unit {
 		let maxNumberOfQubits = 8;
 		let minNumberOfQubits = 1;
-		for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+		for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
 			IntegerAdderExhaustiveTestHelper(CarryLookAheadAdder,numberOfQubits);
 		}
 	}
@@ -422,7 +422,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     operation CDKMGAdderExhaustiveReversibleTest (): Unit {
         let maxNumberOfQubits = 8;
         let minNumberOfQubits = 1;
-        for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+        for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
             IntegerAdderExhaustiveTestHelper(CDKMGAdder,numberOfQubits);
         }
     }
@@ -434,7 +434,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
       operation AdderExhaustiveReversibleTest (): Unit {
         let maxNumberOfQubits = 8;
         let minNumberOfQubits = 1;
-        for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+        for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
             IntegerAdderExhaustiveTestHelper(AddInteger,numberOfQubits);
         }
     }
@@ -460,7 +460,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	///		* RippleCarryAdderNoCarryTTK
 	///		* CarryLookAheadAdderNoCarry
     operation IntegerAdderNoCarryTestHelper( IntegerAdderToTest : ( (LittleEndian, LittleEndian) => Unit is Ctl), summand1 : BigInt, summand2 : BigInt, numberOfQubits : Int ) : Unit {
-        using (register = Qubit[2*numberOfQubits]) {
+        use register = Qubit[2*numberOfQubits] {
 			// Bookkeeping and qubit allocation
             mutable actual1 = 0L;
             mutable actual2 = 0L;
@@ -485,8 +485,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
             Fact(expected== actual2, $"Expected {expected}, got {actual2}");
             let expected_carry = (sum / IntAsBigInt(2^numberOfQubits));
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
 					//Write to qubit regiters
                     ApplyXorInPlaceL(summand1, summand1LE);
                     ApplyXorInPlaceL(summand2, summand2LE);
@@ -524,8 +524,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation IntegerAdderNoCarryExhaustiveTestHelper (IntegerAdderToTest : ( (LittleEndian, LittleEndian) => Unit is Ctl), numberOfQubits : Int) : Unit {
-        for( summand1 in 0 .. 2^numberOfQubits - 1 ) {
-            for( summand2 in 0 .. 2^numberOfQubits - 1 ) {
+        for  summand1 in 0 .. 2^numberOfQubits - 1  {
+            for  summand2 in 0 .. 2^numberOfQubits - 1  {
                 IntegerAdderNoCarryTestHelper(IntegerAdderToTest, IntAsBigInt(summand1), IntAsBigInt(summand2), numberOfQubits);
             }
         }
@@ -544,7 +544,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation RippleCarryAdderNoCarryTTKExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..6) {
+        for numberOfQubits in 1..6 {
             IntegerAdderNoCarryExhaustiveTestHelper (RippleCarryAdderNoCarryTTK, numberOfQubits);
         }
     }
@@ -555,7 +555,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	operation CarryLookAheadAdderNoCarryExhaustiveReversibleTest (): Unit {
 		let maxNumberOfQubits = 8;
 		let minNumberOfQubits = 1;
-		for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+		for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
 			IntegerAdderNoCarryExhaustiveTestHelper(CarryLookAheadAdderNoCarry,numberOfQubits);
 		}
 	}
@@ -567,7 +567,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     operation CDKMGAdderNoCarryExhaustiveReversibleTest (): Unit {
         let maxNumberOfQubits = 8;
         let minNumberOfQubits = 1;
-        for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+        for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
             IntegerAdderNoCarryExhaustiveTestHelper(CDKMGAdderNoCarry,numberOfQubits);
         }
     }
@@ -579,7 +579,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     operation AdderNoCarryExhaustiveReversibleTest (): Unit {
         let maxNumberOfQubits = 8;
         let minNumberOfQubits = 1;
-        for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+        for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
             IntegerAdderNoCarryExhaustiveTestHelper(AddIntegerNoCarry ,numberOfQubits);
         }
     }
@@ -605,7 +605,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	///		* _AddConstantLowT
 	operation AddConstantTestHelper(Adder:((BigInt,LittleEndian)=>Unit is Ctl), constant : BigInt, integer : BigInt, numberOfQubits : Int ) : Unit {
         body (...) {
-            using (register = Qubit[numberOfQubits + 2]) {
+            use register = Qubit[numberOfQubits + 2] {
 				// Bookkeeping and qubit allocation
                 mutable actual = 0L;
                 let integerLE = LittleEndian(register[0 .. numberOfQubits - 1]);
@@ -623,8 +623,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
                 set actual = MeasureBigInteger(integerLE);
                 Fact(expected== actual, $"Expected {expected}, got {actual}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
 						// Write to qubit register
                         ApplyXorInPlaceL(integer, integerLE);
 
@@ -658,8 +658,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 
     operation AddConstantExhaustiveTestHelper (Adder:((BigInt,LittleEndian)=>Unit is Ctl),numberOfQubits : Int) : Unit {
         body (...) {
-            for( constant in 0 .. 2^numberOfQubits - 1 ) {
-                for( integer in 0 .. 2^numberOfQubits - 1 ) {
+            for  constant in 0 .. 2^numberOfQubits - 1  {
+                for  integer in 0 .. 2^numberOfQubits - 1  {
                     AddConstantTestHelper(Adder,IntAsBigInt(constant), IntAsBigInt(integer), numberOfQubits);
                 }
             }
@@ -718,7 +718,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
         body (...) {
 			let maxNumberOfQubits = 8;
 			let minNumberOfQubits = 1;
-			for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+			for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
 				AddConstantExhaustiveTestHelper (CarryLookAheadAddConstant,numberOfQubits);
 			}
         }
@@ -737,7 +737,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
         body (...) {
             let maxNumberOfQubits = 8;
             let minNumberOfQubits = 1;
-            for (numberOfQubits in minNumberOfQubits .. maxNumberOfQubits){
+            for numberOfQubits in minNumberOfQubits .. maxNumberOfQubits {
                 AddConstantExhaustiveTestHelper (CDKMGAddConstant,numberOfQubits);
             }
         }
@@ -763,7 +763,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	///		* GreaterThanLookAhead
 	///		* GreaterThan
     operation GreaterThanTestHelper(Comparator:((LittleEndian,LittleEndian,Qubit)=>Unit is Ctl), integer1 : BigInt, integer2 : BigInt, numberOfQubits : Int ) : Unit {
-        using (register = Qubit[2*numberOfQubits+1]) {
+        use register = Qubit[2*numberOfQubits+1] {
 			// Bookkeeping and qubit allocation
             mutable actual1 = 0L;
             mutable actual2 = 0L;
@@ -792,8 +792,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 			Reset(result);
             EqualityFactB((gt == actualr), true, $"Expected {gt}, got {actualr}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
 					// Write to qubit register
                     ApplyXorInPlaceL(integer1, integer1LE);
                     ApplyXorInPlaceL(integer2, integer2LE);
@@ -835,9 +835,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation GreaterThanExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanTestHelper(GreaterThanWrapper ,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -845,9 +845,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
 	operation GreaterThanLookAheadExhaustiveTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanTestHelper(GreaterThanLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -855,9 +855,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation GreaterThanLookAheadExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanTestHelper(GreaterThanLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -865,9 +865,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation GreaterThanCDKMGExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanTestHelper(CKDMGGreaterThan, IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -893,7 +893,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	/// This can test:
 	///		* GreaterThanConstantLookAhead
 	operation GreaterThanConstantTestHelper(Comparator:((BigInt,LittleEndian,Qubit)=>Unit is Ctl), constant : BigInt, integer : BigInt, numberOfQubits : Int ) : Unit {
-        using (register = Qubit[numberOfQubits+1]) {
+        use register = Qubit[numberOfQubits+1] {
             mutable actual = 0L;
             mutable actualr = Zero;
             mutable gt = Zero;
@@ -911,8 +911,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
             EqualityFactB((gt == actualr), true, $"Expected {gt}, got {actualr}");
 
             Reset(result);
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
 				    ApplyXorInPlaceL(integer, integerLE);
                     (Controlled Comparator) (controls, (constant,integerLE, result));
 
@@ -937,9 +937,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
         }
     }
 	operation GreaterThanConstantLookAheadExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanConstantTestHelper(GreaterThanConstantLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -947,9 +947,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
 	operation GreaterThanConstantLookAheadExhaustiveTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanConstantTestHelper(GreaterThanConstantLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -957,9 +957,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation GreaterThanConstantExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanConstantTestHelper(GreaterThanConstant,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -967,9 +967,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation GreaterThanConstantExhaustiveTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     GreaterThanConstantTestHelper(GreaterThanConstant,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -995,7 +995,7 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 	/// This can test:
 	///		* LessThanConstantLookAhead
 	operation LessThanConstantTestHelper(Comparator:((BigInt,LittleEndian,Qubit)=>Unit is Ctl), constant : BigInt, integer : BigInt, numberOfQubits : Int ) : Unit {
-        using (register = Qubit[numberOfQubits+1]) {
+        use register = Qubit[numberOfQubits+1] {
 			// Bookkeeping and qubit allocation
             mutable actual = 0L;
             mutable actualr = Zero;
@@ -1019,8 +1019,8 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
 			Reset(result);
             EqualityFactB((gt == actualr), true, $"Expected {gt}, got {actualr}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
 					//Write to qubit registers
 				    ApplyXorInPlaceL(integer, integerLE);
 
@@ -1055,9 +1055,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
         }
     }
 	operation LessThanConstantLookAheadExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     LessThanConstantTestHelper(LessThanConstantLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -1065,9 +1065,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
 	operation LessThanConstantLookAheadExhaustiveTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     LessThanConstantTestHelper(LessThanConstantLookAhead,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -1075,9 +1075,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation LessThanConstantExhaustiveReversibleTest () : Unit {
-        for (numberOfQubits in 1..7) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..7 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     LessThanConstantTestHelper(LessThanConstant,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }
@@ -1085,9 +1085,9 @@ operation EqualLookupExhaustiveReversibleTest() : Unit {
     }
 
     operation LessThanConstantExhaustiveTest () : Unit {
-        for (numberOfQubits in 1..5) {
-            for (integer1 in 0..2^numberOfQubits-1) {
-                for (integer2 in 0..2^numberOfQubits-1) {
+        for numberOfQubits in 1..5 {
+            for integer1 in 0..2^numberOfQubits-1 {
+                for integer2 in 0..2^numberOfQubits-1 {
                     LessThanConstantTestHelper(LessThanConstant,IntAsBigInt(integer1), IntAsBigInt(integer2), numberOfQubits);
                 }
             }

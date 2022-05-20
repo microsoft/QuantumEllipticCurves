@@ -188,7 +188,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
         mutable remainingCoefficient = coefficient;
         mutable doubledPoint = point;
         let coefficientBools = BigIntAsBoolArray(coefficient);
-        for (idx in 0 .. Length(coefficientBools) - 1){	
+        for idx in 0 .. Length(coefficientBools) - 1 {	
             if (coefficientBools[idx]){
                 set outputPoint = AddClassicalECPoint(outputPoint, doubledPoint, curve::a);
             }
@@ -268,7 +268,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// Quantum register to write into
     operation EncodeClassicalECPointInQuantum(inputPoint : ECPointClassical, outputPoint : ECPointMontgomeryForm) : Unit {
         body (...) {
-            (Controlled EncodeClassicalECPointInQuantum)(new Qubit[0], (inputPoint, outputPoint));
+            (Controlled EncodeClassicalECPointInQuantum)([], (inputPoint, outputPoint));
         }
         controlled (controls, ...){
             Fact(inputPoint::modulus == outputPoint::xs::modulus,
@@ -393,7 +393,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     ///     * `point1`+`point2` does not equal `-point1
     operation DistinctEllipticCurvePointAddition(point1 : ECPointMontgomeryForm, point2 : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled DistinctEllipticCurvePointAddition)(new Qubit[0], (point1, point2));
+            (Controlled DistinctEllipticCurvePointAddition)([], (point1, point2));
         }
         controlled (controls, ...){
             let nQubits = Length(point1::xs::register!);
@@ -402,7 +402,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
             (Adjoint ModularAddMontgomeryForm)(point1::xs, point2::xs);
             (Adjoint Controlled ModularAddMontgomeryForm)(controls, (point1::ys, point2::ys));
 
-            using (lambdaqubits = Qubit[nQubits]){
+            use lambdaqubits = Qubit[nQubits] {
                 let lambdas = MontModInt(modulus, LittleEndian(lambdaqubits));
                 //Computes lambda in a new register
                 (Controlled ModularDivideAndAddMontgomeryForm)(controls, (point2::xs, point2::ys, lambdas));
@@ -455,7 +455,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     ///     * `point1`+`point2` does not equal `-point1`
     operation DistinctEllipticCurveClassicalPointAddition(point1 : ECPointClassical, point2 : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled DistinctEllipticCurveClassicalPointAddition)(new Qubit[0], (point1, point2));
+            (Controlled DistinctEllipticCurveClassicalPointAddition)([], (point1, point2));
         }
         controlled (controls, ...){
             if (point1::z){
@@ -464,7 +464,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                 // Set the second point to x2-x1 and y2-y1
                 (Adjoint ModularAddConstantMontgomeryForm)(point1::x, point2::xs);
                 (Adjoint Controlled ModularAddConstantMontgomeryForm)(controls, (point1::y, point2::ys));
-                using (lambdaqubits = Qubit[nQubits]){
+                use lambdaqubits = Qubit[nQubits] {
                     let lambdas = MontModInt(modulus, LittleEndian(lambdaqubits));
                     (Controlled ModularDivideAndAddMontgomeryForm)(controls, (point2::xs, point2::ys, lambdas));
                     //Clears y2-y1 using lambda and x2-x1
@@ -507,7 +507,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// as this is intended for use in windowed point addition
     operation ECPointWrite (inputPoint : ECPointClassical, outputPoint : ECPointMontgomeryForm, outputZ : Qubit) : Unit {
         body (...){
-            (Controlled ECPointWrite)(new Qubit[0], (inputPoint, outputPoint, outputZ));
+            (Controlled ECPointWrite)([], (inputPoint, outputPoint, outputZ));
         }
         controlled (controls, ...){
             let modulus = inputPoint::modulus;
@@ -546,13 +546,13 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// these points "at once" with a single fully-quantum point addition.
     operation WindowedEllipticCurvePointAddition(points : ECPointClassical[], address : LittleEndian, point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled WindowedEllipticCurvePointAddition)(new Qubit[0], (points, address, point));
+            (Controlled WindowedEllipticCurvePointAddition)([], (points, address, point));
         }
         controlled (controls, ...){
             let modulus = point::xs::modulus;
             let nQubits = Length(point::xs::register!);
 
-            using (ancillaPointQubits = Qubit[2 * nQubits + 1]){
+            use ancillaPointQubits = Qubit[2 * nQubits + 1] {
                 //Format new qubits into a point
                 let ancillaPoint = ECPointMontgomeryForm(
                     MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1])),
@@ -626,16 +626,16 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// but should use fewer qubits.
     operation WindowedEllipticCurvePointAdditionLowWidth(points : ECPointClassical[], address : LittleEndian, point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled WindowedEllipticCurvePointAdditionLowWidth)(new Qubit[0], (points, address, point));
+            (Controlled WindowedEllipticCurvePointAdditionLowWidth)([], (points, address, point));
         }
         controlled (controls, ...){
             let modulus = point::xs::modulus;
             let nQubits = Length(point::xs::register!);
-            using (zQubit = Qubit()){
+            use zQubit = Qubit() {
                 // Set the second point to x2-x1 and y2-y1
                 // This requires a QRAM look-up
                 // Here we also set the zQubit (which controls other operations)
-                using (ancillaPointQubits = Qubit[2 * nQubits + 1]){
+                use ancillaPointQubits = Qubit[2 * nQubits + 1] {
                     let ancillaPoint = ECPointMontgomeryForm(
                         MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1])),
                         MontModInt(modulus, LittleEndian(ancillaPointQubits[nQubits .. 2 * nQubits - 1]))
@@ -647,14 +647,14 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                     (Controlled CNOT)(controls, (ancillaZ, zQubit));				
                     (Controlled Adjoint EqualLookup)(controls, (points, ECPointWrite(_, ancillaPoint, ancillaZ), address));
                 }
-                using (lambdaqubits = Qubit[nQubits]){
+                use lambdaqubits = Qubit[nQubits] {
                     let lambdas = MontModInt(modulus, LittleEndian(lambdaqubits));
                     (Controlled ModularDivideAndAddMontgomeryForm)(controls + [zQubit], (point::xs, point::ys, lambdas));
                     //Clears y2-y1 using lambda and x2-x1
                     ModularMulAndXorMontgomeryForm(point::xs, lambdas, point::ys);
                     //Adds 3x1 to x2-x1 to get x2+2x1
                     //This needs another QRAM look-up
-                    using (ancillaPointQubits = Qubit[nQubits]){
+                    use ancillaPointQubits = Qubit[nQubits] {
                         let xsMMI = MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1]));
                         (Controlled EqualLookup)(controls, (points, _ClassicalECPointFormat(_, xsMMI), address));
                         (Controlled ModularAddMontgomeryForm)(controls, (xsMMI, point::xs));
@@ -668,7 +668,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                     (Adjoint Controlled ModularDivideAndAddMontgomeryForm)(controls + [zQubit], (point::xs, point::ys, lambdas));
                 }
                 // Adds all required constants in one go
-                using (ancillaPointQubits = Qubit[2 * nQubits + 1]){
+                use ancillaPointQubits = Qubit[2 * nQubits + 1] {
                     let ancillaPoint = ECPointMontgomeryForm(
                         MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1])),
                         MontModInt(modulus, LittleEndian(ancillaPointQubits[nQubits .. 2 * nQubits - 1]))
@@ -719,10 +719,10 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// [b - 2^k]P to the register.
     operation SignedWindowedEllipticCurvePointAdditionLowWidth(points : ECPointClassical[], address : Qubit[], point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled SignedWindowedEllipticCurvePointAdditionLowWidth)(new Qubit[0], (points, address, point));
+            (Controlled SignedWindowedEllipticCurvePointAdditionLowWidth)([], (points, address, point));
         }
         controlled (controls, ...){
-            using (addressAncilla = Qubit()){
+            use addressAncilla = Qubit() {
                 let addressLength = Length(address);
                 let unsignedAddress = address[0 .. addressLength - 2];
                 let leftAddress = LittleEndian(unsignedAddress + [addressAncilla]);
@@ -739,8 +739,8 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                 // This requires a QRAM look-up
                 // Here we also set the zQubit (which controls other operations)
                 if (nQubits > 50){Message($"{nQubits}-bit modulus: First look-up");}
-                using (zQubit = Qubit()){
-                    using (ancillaPointQubits = Qubit[2 * nQubits]){
+                use zQubit = Qubit() {
+                    use ancillaPointQubits = Qubit[2 * nQubits] {
                         let ancillaPoint = ECPointMontgomeryForm(
                             MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1])),
                             MontModInt(modulus, LittleEndian(ancillaPointQubits[nQubits .. 2 * nQubits - 1]))
@@ -756,7 +756,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                         (Controlled ModularNegMontgomeryForm)([signQubit], (ancillaPoint::ys));
                         (Controlled Adjoint EqualLookup)(controls, (points, EncodeClassicalECPointInQuantum(_, ancillaPoint), leftAddress));
                     }
-                    using (lambdaqubits = Qubit[nQubits]){
+                    use lambdaqubits = Qubit[nQubits] {
                         let lambdas = MontModInt(modulus, LittleEndian(lambdaqubits));
                         if (nQubits > 50){Message($"{nQubits}-bit modulus: First division");}
                         (Controlled ModularDivideAndAddMontgomeryForm)(controls + [zQubit], (point::xs, point::ys, lambdas));
@@ -766,7 +766,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                         //Adds 3x1 to x2-x1 to get x2+2x1
                         //This needs another QRAM look-up
                         if (nQubits > 50){Message($"{nQubits}-bit modulus: Second look-up");}
-                        using (ancillaPointQubits = Qubit[nQubits]){
+                        use ancillaPointQubits = Qubit[nQubits] {
                             let xsMMI = MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1]));
                             // Look up 3*(x-value) of the classical point
                             (Controlled EqualLookup)(controls, (points, _ClassicalECPointFormat(_, xsMMI), leftAddress));
@@ -785,7 +785,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
                         (Adjoint Controlled ModularDivideAndAddMontgomeryForm)(controls + [zQubit], (point::xs, point::ys, lambdas));
                     }
                     // Adds all required constants in one go
-                    using (ancillaPointQubits = Qubit[2 * nQubits + 1]){
+                    use ancillaPointQubits = Qubit[2 * nQubits + 1] {
                         if (nQubits > 50){Message($"{nQubits}-bit modulus: Third look-up");}
                         let ancillaPoint = ECPointMontgomeryForm(
                             MontModInt(modulus, LittleEndian(ancillaPointQubits[0..nQubits - 1])),

@@ -19,14 +19,14 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation ClearRegister(register:Qubit[]):Unit {
-        for (idx in 0..Length(register)-1){
+        for idx in 0..Length(register)-1 {
             AssertMeasurementProbability([PauliZ],[register[idx]],Zero,0.0,"n/a",0.5);
         }	
         ResetAll(register);
     }
 
     operation CCNOTEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (qubits = Qubit[3]){
+        use qubits = Qubit[3] {
             CCNOT(qubits[0], qubits[1], qubits[2]);
             ClearRegister(qubits);
         }
@@ -34,7 +34,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation ControlledOp<'T>(isControlled : Bool, op : ('T => Unit is Ctl), parameters : 'T) : Unit {
         if (isControlled){
-            using (controls = Qubit[1]){
+            use controls = Qubit[1] {
                 (Controlled op)(controls, (parameters));
                 ClearRegister(controls);
             }
@@ -46,11 +46,11 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     operation QuantumWhileEstimator(nQubits : Int, isControlled : Bool) : Unit {
         //The types are confusing, so this does the control manually
         let logn = BitSizeI(nQubits);
-        using (kQubits = Qubit[logn +1]){
+        use kQubits = Qubit[logn +1] {
             let counter = QubitsAsCounter(kQubits);
             counter::Prepare();
             if (isControlled){
-                using (controls = Qubit[1]){
+                use controls = Qubit[1] {
                     (Controlled QuantumWhile)(controls, (0, nQubits, NoOp<Int>, NoOp<Qubit>, NoOp<Int>, counter));
                     ClearRegister(controls);
                 }
@@ -63,14 +63,14 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation QuantumWhileAdditionEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let logn = BitSizeI(nQubits);
-        using ((kQubits, xQubits, yQubits) = (Qubit[logn +1], Qubit[nQubits], Qubit[nQubits])){
+        use (kQubits, xQubits, yQubits) = (Qubit[logn +1], Qubit[nQubits], Qubit[nQubits]) {
             let counter = QubitsAsCounter(kQubits);
             let xs = LittleEndian(xQubits);
             let ys = LittleEndian(yQubits);
             counter::Prepare();
             let AddWithInteger = DummyIntegerWrapper(AddIntegerNoCarry, (xs,ys), _);
             if (isControlled){
-                using (controls = Qubit[1]){
+                use controls = Qubit[1] {
                     (Controlled QuantumWhile)(controls, (0,nQubits, AddWithInteger, counter::Test, AddWithInteger, counter));
                     ClearRegister(controls);
                 }
@@ -83,8 +83,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation LookUpEstimator(nQubits : Int, isControlled : Bool) : Unit {
         if (nQubits < 25){
-            using ((addressQubits, outputQubits) = (Qubit[nQubits], Qubit[nQubits])){
-                let valueTable = Microsoft.Quantum.Arrays.ForEach(RandomBoundedBigInt(_, 2L^nQubits - 1L ), new BigInt[2^nQubits]);
+            use (addressQubits, outputQubits) = (Qubit[nQubits], Qubit[nQubits]) {
+                let valueTable = Microsoft.Quantum.Arrays.ForEach(RandomBoundedBigInt(_, 2L^nQubits - 1L ), [0L, size= 2^nQubits]);
                 let value = LittleEndian(outputQubits);
                 let address = LittleEndian(addressQubits);
                 ControlledOp<(BigInt[], (BigInt => Unit is Ctl + Adj), LittleEndian)>
@@ -95,7 +95,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation PointLookUpEstimator(nQubits : Int, isControlled : Bool, windowSize : Int) : Unit {
-        using ((addressQubits, outputXs, outputYs) = (Qubit[windowSize + 1], Qubit[nQubits], Qubit[nQubits])){
+        use (addressQubits, outputXs, outputYs) = (Qubit[windowSize + 1], Qubit[nQubits], Qubit[nQubits]) {
             let points  = RandomPointArray(2L^nQubits - 1L, windowSize) + [RandomInvalidECPoint(false, 2L^nQubits - 1L)];
             let value = ECPointMontgomeryForm(
                 MontModInt(2L^nQubits - 1L, LittleEndian(outputXs)),
@@ -109,21 +109,21 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation CheckIfAllZeroEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using ((xs,result) = (Qubit[nQubits], Qubit())){
+        use (xs,result) = (Qubit[nQubits], Qubit()) {
             ControlledOp(isControlled, CheckIfAllZero, (xs, result));
             ClearRegister(xs+[result]);
         }
     }
 
     operation CheckIfAllOneEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using ((xs,result) = (Qubit[nQubits], Qubit())){
+        use (xs,result) = (Qubit[nQubits], Qubit()) {
             ControlledOp(isControlled, CheckIfAllOnes, (xs, result));
             ClearRegister(xs+[result]);
         }
     }
 
     operation AdditionEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[2*nQubits+1]){
+        use register = Qubit[2*nQubits+1] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let carry = register[2*nQubits];
@@ -136,7 +136,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation AdditionNoCarryEstimator(nQubits:Int, isControlled : Bool):Unit {
-        using (register = Qubit[2*nQubits]){
+        use register = Qubit[2*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             ControlledOp(isControlled, AddIntegerNoCarry, (xs,ys));
@@ -146,7 +146,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation CyclicShiftEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[nQubits]){
+        use register = Qubit[nQubits] {
             let qInteger = LittleEndian(register[0 .. nQubits - 1]);
             ControlledOp(isControlled, CyclicRotateRegister, (qInteger));
             ClearRegister(register);
@@ -154,7 +154,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation ConstantAdditionEstimator(nQubits:Int, isControlled : Bool):Unit {
-        using (register = Qubit[nQubits]){
+        use register = Qubit[nQubits] {
             let constant = RandomBigInt(2L^nQubits);
             ControlledOp(isControlled, AddConstant, (constant, LittleEndian(register)));
             ClearRegister(register);
@@ -164,7 +164,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation GreaterThanEstimator(nQubits:Int, isControlled : Bool):Unit {
-        using (register = Qubit[2*nQubits+1]){
+        use register = Qubit[2*nQubits+1] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let result = register[2*nQubits];
@@ -176,7 +176,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation ModularDblEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[nQubits]){
+        use register = Qubit[nQubits] {
             let modulus = 2L * RandomBigInt(2L ^ (nQubits - 1)) + 1L;
             let xs = LittleEndian(register);
             ControlledOp(isControlled, ModularDblConstantModulus, (modulus, xs));
@@ -187,7 +187,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     
 
     operation ModularAdditionEstimator(nQubits:Int, isControlled : Bool):Unit {
-        using (register = Qubit[2*nQubits]){
+        use register = Qubit[2*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let modulus = RandomBigInt(2L ^ nQubits);
@@ -198,7 +198,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation MontgomeryWindowedMultiplicationWindowTest(nQubits : Int, isControlled : Bool, windowSize : Int) : Unit {
         let (nAncillas, nOutputs) = AncillaCountModularMulMontgomeryForm(nQubits);
-        using ((register, ancillas) = (Qubit[3*nQubits], Qubit[nAncillas])){
+        use (register, ancillas) = (Qubit[3*nQubits], Qubit[nAncillas]) {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let zs = LittleEndian(register[2*nQubits..3*nQubits -1]);
@@ -212,7 +212,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation NonWindowedMontgomeryMultiplicationEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[3*nQubits]){
+        use register = Qubit[3*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let zs = LittleEndian(register[2*nQubits..3*nQubits -1]);
@@ -221,7 +221,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
             let yMMI= MontModInt(modulus, ys);
             let zMMI= MontModInt(modulus, zs);
             let (nAncillas, nOutputs) = AncillaCountModularMulMontgomeryForm(nQubits);
-            using (ancillas = Qubit[nAncillas]){
+            use ancillas = Qubit[nAncillas] {
                 ControlledOp(isControlled, ModularMulMontgomeryFormGeneric(CopyMontModInt(_,zMMI),_, _), (xMMI, yMMI));
                 ClearRegister(ancillas);
             }
@@ -230,7 +230,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation MontgomeryMultiplicationEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[3*nQubits]){
+        use register = Qubit[3*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let zs = LittleEndian(register[2*nQubits..3*nQubits -1]);
@@ -245,7 +245,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation MontgomerySquareEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[2*nQubits]){
+        use register = Qubit[2*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let zs = LittleEndian(register[nQubits..2*nQubits -1]);
             let modulus = 2L*RandomBigInt(2L^(nQubits - 1)) + 1L;
@@ -259,7 +259,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation MontgomeryInversionRoundEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using ((u,v,r,s,ms,controls)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits+1], Qubit[nQubits+1], Qubit[2*nQubits], Qubit[1])){
+        use (u,v,r,s,ms,controls)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits+1], Qubit[nQubits+1], Qubit[2*nQubits], Qubit[1]) {
             let us = LittleEndian(u);
             let vs = LittleEndian(v);
             let rs = LittleEndian(r);
@@ -271,7 +271,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation MontgomeryInversionEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[2*nQubits]){
+        use register = Qubit[2*nQubits] {
             let xs = LittleEndian(register[0..nQubits-1]);
             let ys = LittleEndian(register[nQubits..2*nQubits-1]);
             let modulus = 2L*RandomBigInt(2L^(nQubits - 1)) + 1L;
@@ -284,7 +284,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation ModularDivisionEstimator(nQubits : Int, isControlled : Bool):Unit {
         let modulus = 2L * RandomBigInt(2L ^ (nQubits - 1)) + 1L;
-        using ((xs, ys, zs)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits])){
+        use (xs, ys, zs)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits]) {
             ControlledOp(isControlled, ModularDivideAndAddMontgomeryForm, 
                 (MontModInt(modulus,LittleEndian(xs)),
                 MontModInt(modulus,LittleEndian(ys)),
@@ -295,7 +295,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
 
     operation EllipticCurveConstantPointAdditionEstimator(nQubits : Int, isControlled : Bool) : Unit {
-        using (register = Qubit[2 * nQubits]){
+        use register = Qubit[2 * nQubits] {
             let modulus = 2l*RandomBigInt(2L^(nQubits-1)) - 1L;
             let pointX = RandomBoundedBigInt(0L, modulus);
             let pointY = RandomBoundedBigInt(0L, modulus);
@@ -320,12 +320,12 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation RandomPointArray(modulus : BigInt, windowSize : Int) : ECPointClassical[] {
         return Microsoft.Quantum.Arrays.ForEach(RandomInvalidECPoint(_, modulus),
-            new Bool[2^windowSize]
+            [false, size = 2^windowSize]
         );
     }
 
     operation EllipticCurveWindowedPointAdditionLowWidthWindowTest(nQubits : Int, isControlled : Bool, windowSize : Int) : Unit {
-        using (register = Qubit[2 * nQubits + windowSize]){
+        use register = Qubit[2 * nQubits + windowSize] {
             let modulus = 2L*RandomBoundedBigInt(2L^(nQubits - 2), 2L^(nQubits-1)) + 1L;	
             let points = RandomPointArray(modulus, windowSize);
             let xs = LittleEndian(register[0 .. nQubits - 1]);
@@ -342,7 +342,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
 
     operation EllipticCurveWindowedPointAdditionWindowTest(nQubits : Int, isControlled : Bool, windowSize : Int) : Unit {
-        using (register = Qubit[2 * nQubits + windowSize]){
+        use register = Qubit[2 * nQubits + windowSize] {
             let modulus = 2L*RandomBoundedBigInt(2L^(nQubits - 2), 2L^(nQubits-1)) + 1L;	
             let points = RandomPointArray(modulus, windowSize);
             let xs = LittleEndian(register[0 .. nQubits - 1]);
@@ -358,7 +358,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation EllipticCurveSignedWindowedPointAdditionWindowTest(nQubits : Int, isControlled : Bool, windowSize : Int) : Unit {
         
-        using (register = Qubit[2 * nQubits + windowSize]){
+        use register = Qubit[2 * nQubits + windowSize] {
             let modulus = 2L*RandomBoundedBigInt(2L^(nQubits - 2), 2L^(nQubits-1)) + 1L;
             Message($"OG modulus: {modulus}");	
             let points = RandomPointArray(modulus, windowSize - 1) + [RandomInvalidECPoint(false, modulus)];
@@ -425,7 +425,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
         }
         set modulus = curve::modulus;
         let windowSize = OptimalPointAdditionWindowSize(nQubits);
-        using (register = Qubit[2 * nQubits + windowSize]){	
+        use register = Qubit[2 * nQubits + windowSize] {	
             let points = PointTable(basePoint, 
                 ECPointClassical(0L, 0L, false, modulus),
                 curve,
@@ -448,8 +448,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
         let modulus = RandomFp2Modulus(nQubits);
         let pointP = ECPointMontgomeryXZClassical(RandomFp2ElementClassical(modulus), RandomFp2ElementClassical(modulus));
         let (nAncillas, _) = AncillaCountECPointDiffAddition(nQubits);
-        using ((qQubits, qMinPQubits, ancillas, outputQubits) = 
-            (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits])){
+        use (qQubits, qMinPQubits, ancillas, outputQubits) = 
+            (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits]){
             let pointQ = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qQubits);
             let pointQminP = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qMinPQubits);
             let outputPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputQubits);
@@ -462,8 +462,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     operation PointDoublingEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = RandomFp2Modulus(nQubits);
         let (nAncillas, _) = AncillaCountDoubleECPoint(nQubits);
-        using ((pointQubits, curveQubits, ancillas, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits])){
+        use (pointQubits, curveQubits, ancillas, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits]){
             let point = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, pointQubits);
             let curve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, curveQubits);
             let outputPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputQubits);
@@ -474,8 +474,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation TwoIsogenyPointEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = RandomFp2Modulus(nQubits);
-        using ((kernelQubits, targetQubits, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[4 * nQubits])){
+        use (kernelQubits, targetQubits, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[4 * nQubits]){
             let kernelPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, kernelQubits);
             let targetPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, targetQubits);
             let outputPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputQubits);
@@ -485,8 +485,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     }
     operation TwoIsogenyCurveEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = RandomFp2Modulus(nQubits);
-        using ((kernelQubits, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits])){
+        use (kernelQubits, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits]){
             let kernelPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, kernelQubits);
             let outputCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, outputQubits);
             ControlledOp(isControlled, TwoIsogenyOfCurveMontgomeryXZ, (kernelPoint, outputCurve));
@@ -499,8 +499,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
         let modulus = sikeParams::prime;
         let pointP = sikeParams::pointP;
         let (nAncillas, _) = AncillaCountECPointDiffAddition(nQubits);
-        using ((qQubits, qMinPQubits, ancillas, outputQubits) = 
-            (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits])){
+        use (qQubits, qMinPQubits, ancillas, outputQubits) = 
+            (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits]){
             let pointQ = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qQubits);
             let pointQminP = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qMinPQubits);
             let outputPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputQubits);
@@ -524,8 +524,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     operation SIKEPointDoublingEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = (GetSIKEParamsForQubits(nQubits))::prime;
         let (nAncillas, _) = AncillaCountDoubleECPoint(nQubits);
-        using ((pointQubits, curveQubits, ancillas, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits])){
+        use (pointQubits, curveQubits, ancillas, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits], Qubit[nAncillas], Qubit[4 * nQubits]){
             let point = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, pointQubits);
             let curve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, curveQubits);
             let outputPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputQubits);
@@ -537,8 +537,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
 
     operation SIKETwoIsogenyCurveEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = (GetSIKEParamsForQubits(nQubits))::prime;
-        using ((kernelQubits, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits])){
+        use (kernelQubits, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits]){
             let kernelPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, kernelQubits);
             let outputCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, outputQubits);
             ControlledOp(isControlled, TwoIsogenyOfCurveMontgomeryXZ, (kernelPoint, outputCurve));
@@ -548,8 +548,8 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     
     operation SIKETwoIsogenyPointEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = (GetSIKEParamsForQubits(nQubits))::prime;
-        using ((kernelQubits, outputQubits)
-            = (Qubit[4 * nQubits], Qubit[4 * nQubits])){
+        use (kernelQubits, outputQubits)
+            = (Qubit[4 * nQubits], Qubit[4 * nQubits]){
             let kernelPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, kernelQubits);
             let outputCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, outputQubits);
             ControlledOp(isControlled, TwoIsogenyOfCurveMontgomeryXZ, (kernelPoint, outputCurve));
@@ -560,7 +560,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
     operation SIKEJInvariantEstimator(nQubits : Int, isControlled : Bool) : Unit {
         let modulus = (GetSIKEParamsForQubits(nQubits))::prime;
         let (nAncillas, _) = AncillaCountJInvariantAPlusC(nQubits);
-        using ((curveQubits, ancillas, jInvariantQubits) = (Qubit[4 * nQubits], Qubit[nAncillas], Qubit[2 * nQubits])){
+        use (curveQubits, ancillas, jInvariantQubits) = (Qubit[4 * nQubits], Qubit[nAncillas], Qubit[2 * nQubits]) {
             let curve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, curveQubits);
             let jInvariant = QubitArrayAsFp2MontModInt(modulus, jInvariantQubits);
             ControlledOp(isControlled, GetJInvariantAPlusCOpen, (curve, ancillas, jInvariant));
@@ -577,7 +577,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
         let pointQ = ECPointMontgomeryXZClassical(RandomFp2ElementClassical(modulus), RandomFp2ElementClassical(modulus));
         let pointR = ECPointMontgomeryXZClassical(RandomFp2ElementClassical(modulus), RandomFp2ElementClassical(modulus));
         let height = nQubits/2;
-        using ((coefficientQubits, jQubits) = (Qubit[height], Qubit[2 * nQubits])){
+        use (coefficientQubits, jQubits) = (Qubit[height], Qubit[2 * nQubits]) {
             let coefficient = LittleEndian(coefficientQubits);
             let jInvariant = QubitArrayAsFp2MontModInt(modulus, jQubits);
             ControlledOp(isControlled, ComputeSIKETwoIsogeny, (curve, pointP, pointQ, pointR, height, coefficient, jInvariant));
@@ -593,7 +593,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator
             Fp2ElementClassical(modulus, 8L, 0L),
             Fp2ElementClassical(modulus, 4L, 0L)
         );
-        using ((coefficientQubits, jQubits) = (Qubit[height], Qubit[2 * nQubits])){
+        use (coefficientQubits, jQubits) = (Qubit[height], Qubit[2 * nQubits]) {
             let coefficient = LittleEndian(coefficientQubits);
             let jInvariant = QubitArrayAsFp2MontModInt(modulus, jQubits);
             ControlledOp(isControlled, ComputeSIKETwoIsogeny, 

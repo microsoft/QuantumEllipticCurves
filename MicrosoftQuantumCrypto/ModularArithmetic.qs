@@ -149,13 +149,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     /// as a modular addition between two qubit registers.
     operation ModularAddConstantConstantModulusSimple(constant : BigInt, modulus : BigInt, xs : LittleEndian) : Unit {
         body (...){
-            (Controlled ModularAddConstantConstantModulusSimple)(new Qubit[0], (constant%modulus, modulus, xs));
+            (Controlled ModularAddConstantConstantModulusSimple)([], (constant%modulus, modulus, xs));
         }
         controlled (controls, ...){
             if (constant>=modulus){
                 (Controlled ModularAddConstantConstantModulusSimple)(controls, (constant%modulus, modulus, xs));
             } else {
-                using (carry = Qubit()){
+                use carry = Qubit() {
                     (Controlled AddConstant)(controls, (constant, LittleEndian(xs!+[carry])));
                     (Controlled Adjoint AddConstant)(controls, (modulus, LittleEndian(xs!+[carry])));
                     (Controlled AddConstant)(controls+[carry], (modulus, xs));
@@ -210,7 +210,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(ys!), true, 
                 "Input register ys must have the same number of qubits as the modulus." );
 
-            using ( carry = Qubit() ) {
+            use  carry = Qubit()  {
                 AddInteger(xs, ys, carry);
                 (Adjoint AddInteger)(ms, ys, carry); 
                 (Controlled AddIntegerNoCarry)([carry], (ms, ys));
@@ -245,7 +245,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularNeg (xs : LittleEndian, ms : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularNeg) (new Qubit[0], (xs, ms));
+            (Controlled ModularNeg) ([], (xs, ms));
         }
         adjoint auto;
         controlled ( controls, ... ) {
@@ -254,7 +254,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             EqualityFactB(
                 nQubits == Length(xs!), true, 
                 "Input register xs must have the same number of qubits as the modulus." );
-            using (isAllZeros = Qubit()){
+            use isAllZeros = Qubit() {
                 (Controlled X)(controls, isAllZeros);
                 // Test if input is zero; it should remain zero
                 (Controlled CheckIfAllZero)(controls, (xs!, isAllZeros));
@@ -293,7 +293,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularDbl (xs : LittleEndian, ms : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularDbl) (new Qubit[0], (xs, ms));
+            (Controlled ModularDbl) ([], (xs, ms));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -303,7 +303,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(xs!), true, 
                 "Input register xs must have the same number of qubits as the modulus." );
 
-            using ((carry, control) = (Qubit(), Qubit())) {
+            use (carry, control) = (Qubit(), Qubit()) {
                 let xxs = LittleEndian( xs! + [carry] );
 
                 (Controlled CyclicRotateRegister) (controls, xxs);
@@ -360,7 +360,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(zs!), true, 
                 "Output register zs must have the same number of qubits as the modulus." );
 
-            for (idx in nQubits-1 ..(-1).. 1) {
+            for idx in nQubits-1 ..(-1).. 1 {
                 (Controlled ModularAdd)([xs![idx]], (ys, zs, ms));
                 ModularDbl(zs, ms);
             }
@@ -401,7 +401,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularSquDblAdd (xs : LittleEndian, zs : LittleEndian, ms : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularSquDblAdd) (new Qubit[0], (xs, zs, ms));
+            (Controlled ModularSquDblAdd) ([], (xs, zs, ms));
         }
         adjoint auto;
         controlled ( controls, ... ) {
@@ -414,8 +414,8 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(zs!), true, 
                 "Output register zs must have the same number of qubits as the modulus." );
 
-            using (xsBitcopy = Qubit[1]) {
-                for (idx in nQubits-1 ..(-1).. 1) {
+            use xsBitcopy = Qubit[1] {
+                for idx in nQubits-1 ..(-1).. 1 {
                     (Controlled CNOT) (controls, (xs![idx], xsBitcopy[0]));
                     (Controlled ModularAdd)(xsBitcopy, (xs, zs, ms));
                     (Controlled CNOT) (controls, (xs![idx], xsBitcopy[0]));
@@ -456,7 +456,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularAddConstantModulus (modulus : BigInt, xs : LittleEndian, ys : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularAddConstantModulus) (new Qubit[0], (modulus, xs, ys));
+            (Controlled ModularAddConstantModulus) ([], (modulus, xs, ys));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -466,7 +466,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(ys!), true, 
                 "Input register xs and ys must have the same number of qubits." );
 
-            using (carry = Qubit[1]) {
+            use carry = Qubit[1] {
                 (Controlled AddInteger) (controls, (xs, ys, carry[0])); 
                 (Adjoint AddConstant)(modulus, LittleEndian(ys! + carry));
                 (Controlled AddConstant) (carry, (modulus, ys));
@@ -505,7 +505,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularDblConstantModulus (modulus : BigInt, xs : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularDblConstantModulus) (new Qubit[0], (modulus, xs));
+            (Controlled ModularDblConstantModulus) ([], (modulus, xs));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -515,7 +515,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 modulus % 2L == 1L, true, 
                 "ModularDbl requires modulus to be odd." );
 
-            using ( ancillas = Qubit[1] ) {
+            use  ancillas = Qubit[1]  {
                 let carry = ancillas[0];
                 let xxs = LittleEndian( xs! + [carry] );
 
@@ -557,13 +557,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularAddConstantConstantModulusLowT (constant : BigInt, modulus : BigInt, xs : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularAddConstantConstantModulusLowT) (new Qubit[0], (constant, modulus, xs));
+            (Controlled ModularAddConstantConstantModulusLowT) ([], (constant, modulus, xs));
         }
         adjoint auto;
         controlled (controls, ...) {
             let nQubits = Length(xs!);
             
-            using (carry = Qubit[1]) {
+            use carry = Qubit[1] {
                 ApplyToEachWrapperCA(X, xs!);
                 (Controlled ComputeCarry) (controls, (modulus - constant, xs, carry[0]));
                 ApplyToEachWrapperCA(X, xs!);
@@ -619,7 +619,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(zs!), true, 
                 "Output register zs must have the same number of qubits as the modulus." );
 
-            for (idx in nQubits-1 ..(-1).. 1) {
+            for idx in nQubits-1 ..(-1).. 1 {
                 (Controlled ModularAddConstantModulus)([xs![idx]], (modulus, ys, zs));
                 ModularDblConstantModulus(modulus, zs);
             }
@@ -657,7 +657,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     operation ModularSquDblAddConstantModulus (modulus : BigInt, xs : LittleEndian, zs : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled ModularSquDblAddConstantModulus) (new Qubit[0], (modulus, xs, zs));
+            (Controlled ModularSquDblAddConstantModulus) ([], (modulus, xs, zs));
         }
         adjoint auto;
         controlled ( controls, ... ) {
@@ -666,8 +666,8 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 nQubits == Length(zs!), true, 
                 "Output register zs must have the same number of qubits as the modulus." );
 
-            using (xsBitcopy = Qubit[1]) {
-                for (idx in nQubits-1 ..(-1).. 1) {
+            use xsBitcopy = Qubit[1] {
+                for idx in nQubits-1 ..(-1).. 1 {
                     (Controlled CNOT) (controls, (xs![idx], xsBitcopy[0]));
                     (Controlled ModularAddConstantModulus)(xsBitcopy, (modulus, xs, zs));
                     (Controlled CNOT) (controls, (xs![idx], xsBitcopy[0]));
@@ -709,7 +709,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     {
         body (...) {
             let negModulus = 2L^Length(xs!) - modulus - 1L;
-            using (isAllZeros = Qubit()){
+            use isAllZeros = Qubit() {
                 //Test if the input is all-zeros
                 CheckIfAllZero(xs!, isAllZeros);
                 //If all-zeros, then put the modulus in xs
@@ -725,7 +725,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
         }
         controlled (controls, ...) {
             let negModulus = 2L^Length(xs!) - modulus - 1L;
-            using (isAllZeros = Qubit()){
+            use isAllZeros = Qubit() {
                 (Controlled CheckIfAllZero)(controls, (xs!, isAllZeros));
                 (Controlled ApplyXorInPlaceL)([isAllZeros], (modulus, xs));
                 (Controlled AddConstant)(controls, (negModulus, xs));
@@ -762,11 +762,11 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   except "classically curried" over "x"
     operation ModularMulByConstantConstantModulus(modulus : BigInt, constant : BigInt, xs : LittleEndian, ys : LittleEndian) : Unit{
         body (...) { 
-            (Controlled ModularMulByConstantConstantModulus) (new Qubit[0], (modulus, constant, xs, ys));
+            (Controlled ModularMulByConstantConstantModulus) ([], (modulus, constant, xs, ys));
         }
         controlled (controls, ... ){
             let constantAsArray = BigIntAsBoolArray(constant);
-            for (idx in Length(constantAsArray)-1 ..(-1)..1){
+            for idx in Length(constantAsArray)-1 ..(-1)..1 {
                 if (constantAsArray[idx]){
                     (Controlled ModularAddConstantModulus)(controls, (modulus, xs, ys));
                 }
@@ -798,14 +798,14 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     /// twice, once in Adjoint, using c and c^-1.
     operation ModularMulByConstantConstantModulusInPlace(modulus : BigInt, constant : BigInt, xs : LittleEndian) : Unit {
         body (...) {
-            (Controlled ModularMulByConstantConstantModulusInPlace)(new Qubit[0], (modulus, constant, xs));
+            (Controlled ModularMulByConstantConstantModulusInPlace)([], (modulus, constant, xs));
         }
         controlled (controls, ...) {
             EqualityFactL(GreatestCommonDivisorL(constant, modulus), 1L, 
                 $"Cannot multiply by {constant} in-place modulo {modulus} because they are not co-prime"
             );
             let constantinv = InverseModL(constant, modulus);
-            using (ys = Qubit[Length(xs!)]){
+            use ys = Qubit[Length(xs!)] {
                 let ysLE = LittleEndian(ys);
                 (Controlled SwapLE)(controls, (xs, ysLE));
                 (Controlled ModularMulByConstantConstantModulus)(controls, (modulus, constant, ysLE, xs));
@@ -1270,9 +1270,9 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             AssertEnoughQubits(nSelfOutputs, "Montgomery multiplication output: ", blankOutputs::register!);
             let ms = ancillas[0 .. nQubits - 1];
             
-            using ((ysCarry, testCarry) = (Qubit[1], Qubit())){//only necessary to match the number of qubits for the adder
+            use (ysCarry, testCarry) = (Qubit[1], Qubit()) {//only necessary to match the number of qubits for the adder
                 let carries = [ancillas[nQubits], testCarry];
-                for (idxBit in 0..nQubits-1){
+                for idxBit in 0..nQubits-1 {
                     (Controlled AddInteger)([xsLE![idxBit]], (LittleEndian(ysLE! + ysCarry), LittleEndian(outputsLE! + [carries[0]]), carries[1]));
                     CNOT(outputsLE![0], ms[idxBit]);
                     (Controlled AddConstant)([ms[idxBit]], (modulus, LittleEndian(outputsLE! + carries)));
@@ -1311,7 +1311,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     /// added to the look-up register, it clears the lower k bits.
     operation WriteLowBitClearingMultiple(index : BigInt, bitLength : Int, modulus : BigInt, register : LittleEndian) : Unit {
         body (...){
-            (Controlled WriteLowBitClearingMultiple)(new Qubit[0], (index, bitLength, modulus, register));
+            (Controlled WriteLowBitClearingMultiple)([], (index, bitLength, modulus, register));
         }
         controlled (controls, ...){
             let newIndex = 2L^bitLength - index;
@@ -1370,19 +1370,19 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 AssertEnoughQubits(nSelfOutputs, "Montgomery multiplication output: ", blankOutputs::register!);
                 let ms = ancillas[0 .. nQubits - 1];
                 let carry = ancillas[nQubits];
-                using (ysCarry = Qubit[1]){//only necessary to match the number of qubits for the adder
+                use ysCarry = Qubit[1] {//only necessary to match the number of qubits for the adder
                     let nWindows = nQubits / windowSize + 1 - BoolArrayAsInt([nQubits % windowSize == 0]);
-                    for (idxWindow in 0 .. nWindows - 1){
+                    for idxWindow in 0 .. nWindows - 1 {
                         let currentWindowSize = MinI(windowSize, nQubits - idxWindow * windowSize);// max possible window size
                         // Allocates extra qubits for carries, which are cleared with every window
-                        using (outputAncillas = Qubit[currentWindowSize]){
+                        use outputAncillas = Qubit[currentWindowSize] {
                             // Bookkeeping of ancilla
                             let outputs = outputsLE! + [carry] + outputAncillas;
                             let smallOutputs = outputsLE! + [carry] + outputAncillas[0.. currentWindowSize - 2];
                             let lastOutput = outputAncillas[currentWindowSize - 1];
                             // This loop does a naive multiplication of windowSize bits of x
                             // and the entire integer y, adding the result to the output register
-                            for (idxWindowBit in 0 .. currentWindowSize - 1){
+                            for idxWindowBit in 0 .. currentWindowSize - 1 {
                                 // get n+1 bits 
                                 let roundOutputs = LittleEndian(outputs[idxWindowBit .. idxWindowBit + nQubits]);
                                 (Controlled AddInteger)(
@@ -1405,7 +1405,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                             // Adds that register to the outputs to clear the low bits
                             // Possible future improvement: an "EqualLookup" that takes a function, rather than
                             // an array
-                            using (modulusQubits = Qubit[nQubits + currentWindowSize]){
+                            use modulusQubits = Qubit[nQubits + currentWindowSize] {
                                 let modulusMultiple = LittleEndian(modulusQubits);
                                 let bigIntSequence = Microsoft.Quantum.Arrays.SequenceL(0L, 2L^currentWindowSize - 1L);
                                 EqualLookup(bigIntSequence, WriteLowBitClearingMultiple(_, currentWindowSize, modulus, modulusMultiple), address);
@@ -1470,13 +1470,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //eprint.iacr.org/2017/598
     operation ModularMulMontgomeryFormGeneric(copyop : ((MontModInt) => Unit is Ctl + Adj), xs : MontModInt, ys : MontModInt) : Unit {
         body (...) {
-            (Controlled ModularMulMontgomeryFormGeneric)(new Qubit[0], (copyop, xs, ys));
+            (Controlled ModularMulMontgomeryFormGeneric)([], (copyop, xs, ys));
         }
         controlled (controls, ...){
             let modulus = xs::modulus;
             let nQubits=Length(xs::register!);
             let (nAncilla, nOutputs) = AncillaCountModularMulMontgomeryForm(nQubits);
-            using((ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs])){
+            use (ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs]) {
                 let innerzs = MontModInt(modulus, LittleEndian(outputs));       
                 ModularMulMontgomeryFormOpen(xs, ys, ancillas, innerzs);
                 /// Since we reverse the main body of the circuit, this is the only
@@ -1558,13 +1558,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //eprint.iacr.org/2017/598
     operation ModularMulMontgomeryFormWindowedGeneric(copyop : ((MontModInt) => Unit is Ctl + Adj), xs : MontModInt, ys : MontModInt) : Unit {
         body (...) {
-            (Controlled ModularMulMontgomeryFormWindowedGeneric)(new Qubit[0], (copyop, xs, ys));
+            (Controlled ModularMulMontgomeryFormWindowedGeneric)([], (copyop, xs, ys));
         }
         controlled (controls, ...){
             let modulus = xs::modulus;
             let nQubits=Length(xs::register!);
             let (nAncilla, nOutputs) = AncillaCountModularMulMontgomeryForm(nQubits);
-            using((ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs])){
+            use (ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs]) {
                 let innerzs = MontModInt(modulus, LittleEndian(outputs));
                 let windowSize = OptimalMultiplicationWindowSize(nQubits);
                 ModularMulMontgomeryFormWindowedOpen(windowSize, xs, ys, ancillas, innerzs);                    
@@ -1623,16 +1623,16 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             // Thus, if the number of 1 bits in the constant is less than 9/10 * number of bits
             // Then it is more cost effective to add uncontrolled
             if (9 * nQubits < 10 * numOneBits){
-                (Controlled MulByConstantMontgomeryFormOpen)(new Qubit[0], (constant, xs, ancillas, blankOutputs));
+                (Controlled MulByConstantMontgomeryFormOpen)([], (constant, xs, ancillas, blankOutputs));
             } else {
                 // Ancilla bookkeeping
                 let carries = ancillas[nQubits .. nQubits + 1];
                 let outputOneCarry = LittleEndian(blankOutputs::register! + [carries[0]]);
                 let outputTwoCarries = LittleEndian(blankOutputs::register!+carries);
                 // The input requires an extra qubit to match the output
-                using (xCarry = Qubit[1]){
+                use xCarry = Qubit[1] {
                     let xsOneCarry = LittleEndian(xs::register! + xCarry);
-                    for (idx in 0..nQubits - 1){
+                    for idx in 0..nQubits - 1 {
                         //Small constants will produce small arrays
                         //This simulates leading zeros
                         if (Length(constantArray) > idx){
@@ -1665,9 +1665,9 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             // The input requires an extra qubit to match the output
             // This is only used in the second if, but it would be 
             // difficult to conditionally allocate a qubit.
-            using (xCarry = Qubit[1]){
+            use xCarry = Qubit[1] {
                 let xsOneCarry = LittleEndian(xs::register! + xCarry);
-                for (idx in 0..nQubits - 1){
+                for idx in 0..nQubits - 1 {
                     // A single controlled addition by a constant uses 9n+o(n) Toffoli gates
                     // A single controlled addition of two quantum registers uses 12n+o(n) Toffoli gates
                     // This chooses the cheaper option based on the Hamming weight
@@ -1737,12 +1737,12 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //eprint.iacr.org/2017/598
     operation MulByConstantMontgomeryFormGeneric(copyop : (MontModInt=>Unit is Ctl + Adj), constant:BigInt, xs:MontModInt):Unit {
         body (...){
-            (Controlled MulByConstantMontgomeryFormGeneric)(new Qubit[0], (copyop, constant, xs));
+            (Controlled MulByConstantMontgomeryFormGeneric)([], (copyop, constant, xs));
         }
         controlled (controls,...){
             let nQubits = Length(xs::register!);
             let (nMulAncilla, nMulOutputs) = AncillaCountConstantMulMontgomeryForm(nQubits);
-            using ((ancillas, outputs) = (Qubit[nMulAncilla], Qubit[nMulOutputs])){
+            use (ancillas, outputs) = (Qubit[nMulAncilla], Qubit[nMulOutputs]) {
                 let productMontModInt = MontModInt(xs::modulus, LittleEndian(outputs));
                 MulByConstantMontgomeryFormOpen(constant, xs, ancillas, productMontModInt);
                 (Controlled copyop)(controls, (productMontModInt));
@@ -1788,9 +1788,9 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             AssertEnoughQubits(nSelfOutput, "Montgomery square output: ", blankOutputs::register!);
             AssertEnoughQubits(nSelfAncilla, "Montgomery square ancilla: ", ancillas);
             let ms = ancillas[0 .. nQubits - 1];
-            using ((xControl, xsCarry, testCarry) = (Qubit(), Qubit[1], Qubit())){//only necessary to match the number of qubits for the TTK adder
+            use (xControl, xsCarry, testCarry) = (Qubit(), Qubit[1], Qubit()) {//only necessary to match the number of qubits for the TTK adder
                 let carries = [ancillas[nQubits], testCarry];
-                for (idxBit in 0..nQubits-1){
+                for idxBit in 0..nQubits-1 {
                     CNOT((xs::register)![idxBit], xControl);
                     (Controlled AddInteger)([xControl], (LittleEndian(xsLE! + xsCarry), LittleEndian(outputsLE! + [carries[0]]), carries[1]));
                     CNOT((xs::register)![idxBit], xControl);
@@ -1867,20 +1867,20 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 AssertEnoughQubits(nSelfAncilla, "Montgomery square ancilla: ", ancillas);
                 let ms = ancillas[0 .. nQubits - 1];
                 let carry = ancillas[nQubits];
-                using (xsCarry = Qubit[1]){//only necessary to match the number of qubits for the adder
+                use xsCarry = Qubit[1] {//only necessary to match the number of qubits for the adder
                     let nWindows = nQubits / windowSize + 1 - BoolArrayAsInt([nQubits % windowSize == 0]);
-                    for (idxWindow in 0 .. nWindows - 1){
+                    for idxWindow in 0 .. nWindows - 1 {
                         let currentWindowSize = MinI(windowSize, nQubits - idxWindow * windowSize);// max possible window size
                         // Allocates extra qubits for carries, which are cleared with every window
-                        using (outputAncillas = Qubit[currentWindowSize]){
+                        use outputAncillas = Qubit[currentWindowSize] {
                             // Bookkeeping of ancilla
                             let outputs = outputsLE! + [carry] + outputAncillas;
                             let smallOutputs = outputsLE! + [carry] + outputAncillas[0.. currentWindowSize - 2];
                             let lastOutput = outputAncillas[currentWindowSize - 1];
                             // This loop does a naive multiplication of windowSize bits of x
                             // and the entire integer y, adding the result to the output register
-                            using (xControl = Qubit()){
-                                for (idxWindowBit in 0 .. currentWindowSize - 1){
+                            use xControl = Qubit() {
+                                for idxWindowBit in 0 .. currentWindowSize - 1 {
                                     // get n+1 bits 
                                     CNOT(xsLE![idxWindowBit + idxWindow * windowSize], xControl);
                                     let roundOutputs = LittleEndian(outputs[idxWindowBit .. idxWindowBit + nQubits]);
@@ -1907,7 +1907,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                             // Adds that register to the outputs to clear the low bits
                             // Possible future improvement: an "EqualLookup" that takes a function, rather than
                             // an array
-                            using (modulusQubits = Qubit[nQubits + currentWindowSize]){
+                            use modulusQubits = Qubit[nQubits + currentWindowSize] {
                                 let modulusMultiple = LittleEndian(modulusQubits);
                                 let bigIntSequence = Microsoft.Quantum.Arrays.SequenceL(0L, 2L^currentWindowSize - 1L);
                                 EqualLookup(bigIntSequence, WriteLowBitClearingMultiple(_, currentWindowSize, modulus, modulusMultiple), address);
@@ -1969,13 +1969,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //eprint.iacr.org/2017/598
     operation ModularSquMontgomeryFormGeneric (copyop : ((MontModInt) => Unit is Ctl + Adj), xs : MontModInt) : Unit {
         body (...) {
-            (Controlled ModularSquMontgomeryFormGeneric)(new Qubit[0], (copyop, xs));
+            (Controlled ModularSquMontgomeryFormGeneric)([], (copyop, xs));
         }
         controlled (controls, ...){
             let modulus = xs::modulus;
             let nQubits=Length(xs::register!);
             let (nAncillas, nOutputs) = AncillaCountModularSquMontgomeryForm(nQubits);
-            using((ancillas, outputQubits) = (Qubit[nAncillas], Qubit[nOutputs])){
+            use (ancillas, outputQubits) = (Qubit[nAncillas], Qubit[nOutputs]) {
                 let innerzs = MontModInt(modulus, LittleEndian(outputQubits));
                 ModularSquMontgomeryFormOpen(xs, ancillas, innerzs);
                 /// Since we reverse the main body of the circuit, this is the only
@@ -2011,7 +2011,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //eprint.iacr.org/2017/598
     operation ModularSquMontgomeryFormWindowedGeneric (copyop : ((MontModInt) => Unit is Ctl + Adj), xs : MontModInt) : Unit {
         body (...) {
-            (Controlled ModularSquMontgomeryFormWindowedGeneric)(new Qubit[0], (copyop, xs));
+            (Controlled ModularSquMontgomeryFormWindowedGeneric)([], (copyop, xs));
         }
         controlled (controls, ...){
             //DumpLittleEndian(xs::register, "Input:");
@@ -2022,7 +2022,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
                 (Controlled ModularSquMontgomeryFormGeneric)(controls, (copyop, xs));
             } else {
                 let (nAncilla, nOutputs) = AncillaCountModularSquMontgomeryForm(nQubits);
-                using((ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs])){
+                use (ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs]) {
                     let innerzs = MontModInt(modulus, LittleEndian(outputs));
                     ModularSquMontgomeryFormWindowedOpen(windowSize, xs, ancillas, innerzs);
                     /// Since we reverse the main body of the circuit, this is the only
@@ -2069,13 +2069,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     ///   https : //doi.org/10.1109/12.403725
     operation _MontBitGCDRound(indexm : Int, us : LittleEndian, vs : LittleEndian, rs : LittleEndian, ss : LittleEndian, ms : Qubit[]) : Unit {
         body(...){
-            (Controlled _MontBitGCDRound)(new Qubit[0], (indexm, us, vs, rs, ss, ms));
+            (Controlled _MontBitGCDRound)([], (indexm, us, vs, rs, ss, ms));
         }
         controlled(controls, ...){
             if (Length(controls) > 1 ){
                 Message($"Warning: GCD round called with {Length(controls)} controls");
             }
-            using ((carry, aQubit, bQubit)=(Qubit(), Qubit(), Qubit())){
+            use (carry, aQubit, bQubit)=(Qubit(), Qubit(), Qubit()) {
                 //carry is the qubit in figure 9 between v and s
                 //aqubit is the bottom qubit in figure 9, between r and m_i
                 //bqubit is the top qubit in figure 9, between r and m_i
@@ -2193,7 +2193,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             //Set up the counter
             let counter = QubitsAsCounter(counterQubits);
             counter::Prepare();
-            using ((uQubits, rQubits, sQubits)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits+1])){
+            use (uQubits, rQubits, sQubits)=(Qubit[nQubits], Qubit[nQubits], Qubit[nQubits+1]) {
                 let vsLE = vs::register;
                 let us = LittleEndian(uQubits);
                 let rs = LittleEndian(rQubits + [rCarry]);
@@ -2266,7 +2266,7 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
             _MontBitGCDWithAncillaInner(NoOp<Int>(_), xs, register);
             CopyMontModInt(xs,blankOutputs);
             //Corrects the pseudo-inverse
-            using (secondCounterQubits = Qubit[logn + 1]){
+            use secondCounterQubits = Qubit[logn + 1] {
                 let secondCounter = QubitsAsCounter(secondCounterQubits);
                 secondCounter::Prepare();
                 let Decrementer = DummyIntegerWrapper((Adjoint counter::Increment), (), _);
@@ -2332,13 +2332,13 @@ namespace Microsoft.Quantum.Crypto.ModularArithmetic {
     /// with non-commutative operations.
     operation InvertBitShiftConstantModulusGeneric(copyop : (MontModInt=> Unit is Ctl + Adj), doubleop : (Int=>Unit is Ctl + Adj), xs : MontModInt) : Unit {
         body (...) {
-            (Controlled InvertBitShiftConstantModulusGeneric)(new Qubit[0], (copyop, doubleop, xs));
+            (Controlled InvertBitShiftConstantModulusGeneric)([], (copyop, doubleop, xs));
         }
         controlled (controls, ...){
             let modulus = xs::modulus;
             let nQubits=Length(xs::register!);
             let logn = BitSizeI(nQubits);
-            using (register =Qubit[2 * nQubits + logn + 2]){
+            use register =Qubit[2 * nQubits + logn + 2] {
                 
                 //Not controlled because it will be reversed immediately
                  _MontBitGCDWithAncillaInner(doubleop(_), xs, register);

@@ -66,7 +66,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     /// `counter` is not in its zero state.
     operation TestSpecialCounter(counter : Qubit[], target : Qubit) : Unit {
         body (...) {
-            (Controlled TestSpecialCounter)(new Qubit[0], (counter, target));
+            (Controlled TestSpecialCounter)([], (counter, target));
         }
         controlled(controls, ...){
             (Controlled CheckIfAllOnes)(controls, (counter, target));
@@ -117,13 +117,13 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     /// Qubit register of the counter to increment.
     operation IncrementSpecialCounter(counter : Qubit[]) : Unit {
         body (...) {
-            (Controlled IncrementSpecialCounter)(new Qubit[0], (counter));
+            (Controlled IncrementSpecialCounter)([], (counter));
         }
         controlled (controls, ...){
             let nQubits=Length(counter);
             (Controlled CyclicRotateRegister)(controls, LittleEndian(counter));
             let polynomial = _PrimitiveGF2Polynomial(nQubits);
-            for (idp in 0..Length(polynomial) - 1){
+            for idp in 0..Length(polynomial) - 1 {
                 (Controlled CNOT)(controls, (counter[0], counter[polynomial[idp]]));
             }
         }

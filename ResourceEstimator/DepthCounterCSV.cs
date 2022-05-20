@@ -47,24 +47,45 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator.CommaSeparated
         { get; set; }
 
         [FieldConverter(typeof(QDecimalConverter))]
-        public decimal StartTimeAverage
+        public decimal StartTimeDifferenceAverage
         { get; set; }
 
         [FieldConverter(typeof(QDecimalConverter))]
-        public decimal StartTimeSecondMoment
+        public decimal StartTimeDifferenceSecondMoment
         { get; set; }
 
         [FieldConverter(typeof(QDecimalConverter))] // [FieldConverter(ConverterKind.Decimal, ".")]
-        public decimal? StartTimeVariance
+        public decimal? StartTimeDifferenceVariance
         { get; set; }
 
-        public long StartTimeSum
+        public long StartTimeDifferenceSum
         { get; set; }
 
-        public long StartTimeMin
+        public long StartTimeDifferenceMin
         { get; set; }
 
-        public long StartTimeMax
+        public long StartTimeDifferenceMax
+        { get; set; }
+
+         [FieldConverter(typeof(QDecimalConverter))]
+        public decimal WidthAverage
+        { get; set; }
+
+        [FieldConverter(typeof(QDecimalConverter))]
+        public decimal WidthSecondMoment
+        { get; set; }
+
+        [FieldConverter(typeof(QDecimalConverter))]
+        public decimal? WidthVariance
+        { get; set; }
+
+        public long WidthSum
+        { get; set; }
+
+        public long WidthMin
+        { get; set; }
+
+        public long WidthMax
         { get; set; }
     }
 }
