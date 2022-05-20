@@ -35,7 +35,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int) : Unit {
       body (...) {
           // Bookkeeping and qubit allocation
-            using (register = Qubit[4 * nQubits]) {
+            use register = Qubit[4 * nQubits] {
                 // Write to qubit registers
                 mutable qpoint1 = ClassicalECPointToQuantum(point1, register[0..2 * nQubits-1]);
                 mutable qpoint2 = ClassicalECPointToQuantum(point2, register[2 * nQubits..4 * nQubits-1]);
@@ -52,8 +52,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 mutable actualp2 = MeasureECPoint(qpoint2);
                 Fact(expected::x == actualp2::x and expected::y == actualp2::y and expected::z == actualp2::z, $"Output : Expected {expected!}, got {actualp2!}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         //Write to qubit registers
                         set qpoint1 = ClassicalECPointToQuantum(point1, register[0..2 * nQubits-1]);
                         set qpoint2 = ClassicalECPointToQuantum(point2, register[2 * nQubits..4 * nQubits-1]);
@@ -113,14 +113,14 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 [4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919]
             ];
             Fact(nQubits<=Length(primes), $"The helper does not have {nQubits}-bit primes");
-            for (modulus in primes[nQubits-1]) {
+            for modulus in primes[nQubits-1] {
                 if (modulus % 4 == 3){//necessary for lazy point validation
-                    for( curveround in 0 .. modulus - 1 ) {
+                    for  curveround in 0 .. modulus - 1  {
                         //pick random elliptic curves
                         let ca = DrawRandomInt(0,modulus - 1);
                         let cb = DrawRandomInt(0,modulus - 1);
                         if ((4 * ca^3+27 * cb^2) % modulus != 0) {
-                            for (pointround in 0 .. modulus - 1){
+                            for pointround in 0 .. modulus - 1 {
                                 //pick several points on the curve to test
                                  let p1x = DrawRandomInt(0,modulus - 1);
                                  let p1signint = DrawRandomInt(0,1);
@@ -194,7 +194,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     operation EllipticCurveDistinctClassicalPointAdditionTestHelper (PointAdder : ((ECPointClassical, ECPointMontgomeryForm)=>Unit is Ctl), point1 : ECPointClassical, point2 : ECPointClassical, nQubits : Int) : Unit {
       body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
 
                 //Write to qubit register
                 mutable qpoint = ClassicalECPointToQuantum(point2, register[0..2 * nQubits-1]);
@@ -209,8 +209,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 mutable actual = MeasureECPoint(qpoint);
                 Fact(expected::x == actual::x and expected::y == actual::y and expected::z == actual::z, $"Output : Expected {expected!}, got {actual!}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         set qpoint = ClassicalECPointToQuantum(point2, register[0..2 * nQubits-1]);
 
@@ -262,14 +262,14 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 [4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919]
             ];
             Fact(nQubits<=Length(primes), $"The helper does not have {nQubits}-bit primes");
-            for (modulus in primes[nQubits-1]) {
+            for modulus in primes[nQubits-1] {
                 if (modulus % 4 == 3){//necessary for lazy point validation
-                    for( curveround in 0 .. modulus - 1 ) {
+                    for  curveround in 0 .. modulus - 1  {
                         //pick random elliptic curves
                         let ca = DrawRandomInt(0, modulus - 1);
                         let cb = DrawRandomInt(0, modulus - 1);
                         if ((4 * ca^3+27 * cb^2) % modulus != 0) {
-                            for (pointround in 0 .. modulus - 1){
+                            for pointround in 0 .. modulus - 1 {
                                 //pick several points on the curve to test
                                  let p1x = DrawRandomInt(0, modulus - 1);
                                  let p1signint = DrawRandomInt(0, 1);
@@ -366,7 +366,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int) : Unit {
       body (...) {
         // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits + addressSize]) {
+            use register = Qubit[2 * nQubits + addressSize] {
                 // Write to qubit registers
                 mutable qPoint = ClassicalECPointToQuantum(point2, register[0..2 * nQubits-1]);
                 mutable qAddress = LittleEndian(register[2* nQubits .. 2 * nQubits + addressSize - 1]);
@@ -386,8 +386,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 );
                 mutable actualAddress = MeasureBigInteger(qAddress);
                 Fact(IntAsBigInt(address) == actualAddress, $"Output : Expected {address}, got {actualAddress}");
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         //Write to qubit registers
                         set qPoint = ClassicalECPointToQuantum(point2, register[0..2 * nQubits-1]);
                         ApplyXorInPlaceL(IntAsBigInt(address), qAddress);
@@ -461,7 +461,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
             Fact(nQubits<=Length(primes), $"The helper does not have {nQubits}-bit primes");
             let nPrimes = Length(primes[nQubits  - 1]);
             mutable testedIdentity = false;
-            for (idxTest in 0 .. nTests - 1){
+            for idxTest in 0 .. nTests - 1 {
                 mutable success = false;
                 repeat {
                     let modulus = primes[nQubits - 1][DrawRandomInt(0, nPrimes - 1)]; 
@@ -483,7 +483,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
                             //3) Where cpoint+cPoint2 = -cPoint1
                             if (cPoint2::z and cPoint1::x != cPoint2::x and cPoint3::x != cPoint1::x){
                                 let address = DrawRandomInt(0, 2 ^ addressSize - 1);
-                                mutable points = new ECPointClassical[2^addressSize];
+                                mutable points = [ECPointClassical(0L,0L,true,0L), size = 2^addressSize];
                                 set points w/= address <- cPoint1;
                                 EllipticCurveWindowedPointAdditionTestHelper(WindowedPointAdder, points, cPoint2, address, addressSize, nQubits);
                                 set success = true;
@@ -515,7 +515,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int) : Unit {
       body (...) {
         // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits + addressSize]) {
+            use register = Qubit[2 * nQubits + addressSize] {
                 let modulus = point2::modulus;
 
                 // Compute expected classical value
@@ -548,8 +548,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 );
                 mutable actualAddress = MeasureBigInteger(qAddress);
                 Fact(IntAsBigInt(address) == actualAddress, $"Output : Expected {address}, got {actualAddress}");
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         //Write to qubit registers
                         set qPoint = ClassicalECPointToQuantum(point2, register[0..2 * nQubits-1]);
                         ApplyXorInPlaceL(IntAsBigInt(address), qAddress);
@@ -620,7 +620,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
             ];
             Fact(nQubits<=Length(primes), $"The helper does not have {nQubits}-bit primes");
             let nPrimes = Length(primes[nQubits  - 1]);
-            for (idxTest in 0 .. nTests - 1){
+            for idxTest in 0 .. nTests - 1 {
                 mutable success = false;
                 repeat {
                     let modulus = primes[nQubits - 1][DrawRandomInt(0, nPrimes - 1)]; 
@@ -690,7 +690,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         //idea: pick random point, add all doubled multiples of that point, and all doubled multiples of P
         let nBits = BitSizeL(curve::modulus);
-        for (idxTest in 0 .. nTests - 1){
+        for idxTest in 0 .. nTests - 1 {
             Message($"    Running test {idxTest} of {nTests}");
             let Q1 = MultiplyClassicalECPoint(generator, curve, RandomBigInt(curveOrder-1L)+1L);
             let Q2 = MultiplyClassicalECPoint(generator, curve, RandomBigInt(curveOrder-1L)+1L);
@@ -711,7 +711,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
             Secp256k1,
             Curve25519
         ];
-        for (curveFunction in curves){
+        for curveFunction in curves {
             let (curve, generator, curveOrder, name) = curveFunction();
             Message("Testing curve: " + name);
             ShorAdditionTestHelper(
@@ -741,7 +741,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         let points = [identity] + PointTable(startPoint, startPoint, curve, windowSize - 1);
         let Q = MultiplyClassicalECPoint(generator, curve, RandomBigInt(curveOrder-1L)+1L);
         Message("    Test prepped, about to run");
-        for (address in 0 .. 2^windowSize -1){
+        for address in 0 .. 2^windowSize -1 {
             Message($"Address: {address}");
             SignedEllipticCurveWindowedPointAdditionTestHelper(
                 SignedWindowedPointAdder, 
@@ -772,7 +772,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
             Secp256k1,
             Curve25519
         ];
-        for (curveFunction in curves){
+        for curveFunction in curves {
             let (curve, generator, curveOrder, name) = curveFunction();
             Message("Testing curve: " + name);
             ShorAdditionWindowedExhaustiveTestHelper(
@@ -797,7 +797,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         let windowSize = OptimalSignedPointAdditionWindowSize(nQubits);
         Message($"Window size: {windowSize}");
         
-        for (idxTest in 0 .. nTests - 1){
+        for idxTest in 0 .. nTests - 1 {
             Message($"    Prepping test {idxTest} of {nTests}");
             let startWindow = DrawRandomInt(0, nQubits - 1);
             let startPoint = MultiplyClassicalECPoint(generator, curve, 2L^startWindow);
@@ -834,7 +834,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
             Secp256k1,
             Curve25519
         ];
-        for (curveFunction in curves){
+        for curveFunction in curves {
             let (curve, generator, curveOrder, name) = curveFunction();
             Message("Testing curve: " + name);
             ShorAdditionWindowedRandomTestHelper(

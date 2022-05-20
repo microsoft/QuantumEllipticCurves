@@ -139,7 +139,7 @@ namespace Microsoft.Quantum.Crypto.ResourceEstimator.CommaSeparated
                 {
                     if (cust.Name == line_name || all)
                     {
-                        results += $"{cust.DepthAverage}, ";
+                        results += $"{cust.DepthAverage}, {cust.WidthAverage}, {cust.WidthMax}, ";
                     }
                 }
             }

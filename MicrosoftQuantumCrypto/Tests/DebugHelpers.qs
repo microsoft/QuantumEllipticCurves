@@ -97,7 +97,7 @@ namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers
 
 
     function PrintClassicalECPointArray(points: ECPointMontgomeryXZClassical[] ) : Unit {
-        for (idx in 0..Length(points) - 1){
+        for idx in 0..Length(points) - 1 {
             Message($"Point {idx}:" + ECPointMontgomeryXZClassicalAsString(points[idx]));
         }
     }
@@ -106,7 +106,7 @@ namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers
     operation DumpECPointArray(points : ECPointMontgomeryXZ[], message : String) : Unit {
         body (...){
             Message(message);
-            for (idx in 0.. Length(points) - 1){
+            for idx in 0.. Length(points) - 1 {
                 DumpECPoint(points[idx], $"Point {idx}:");
             }
         }
@@ -185,7 +185,7 @@ namespace Microsoft.Quantum.ModularArithmetic.DebugHelpers
     operation DumpQubits(qubits:Qubit[],message:String):Unit {
         body(...){
             mutable newmessage = message;
-            for (idx in 0..Length(qubits)-1){
+            for idx in 0..Length(qubits)-1 {
                 if (ResultAsBool(M(qubits[idx]))){
                     set newmessage = newmessage + "1";
                 } else {

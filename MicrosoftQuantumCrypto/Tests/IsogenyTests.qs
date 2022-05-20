@@ -608,7 +608,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     /// required bit size.
     /// If no such two torsion exists, returns -1.
     function SIKETwoTorsionForBitSize(nBits : Int) : Int {
-        for (twoTorsion in 4 .. 3 * nBits){
+        for twoTorsion in 4 .. 3 * nBits {
             let SIKEps = GetSIKEParams(twoTorsion);
             if (BitSizeL(SIKEps::prime) == nBits){
                 return twoTorsion;
@@ -647,7 +647,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     ) : Unit {
       body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[12*nQubits]) {
+            use register = Qubit[12*nQubits] {
                 let modulus = point::x::modulus;
                 let zeropoint = ECPointMontgomeryXZClassical(
                     Fp2ElementClassical(modulus, 0L,0L),
@@ -685,8 +685,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                     , got ({actualpoint2::x::real} + {actualpoint2::x::imag}i,{actualpoint2::z::real} + {actualpoint2::z::imag}i)"
                 );
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         set qpoint1 = CreateECPointMontgomeryXZ(point,register[0..4*nQubits - 1]);
                         set qpoint2 = CreateECPointMontgomeryXZ(zeropoint,register[4*nQubits..8*nQubits - 1]);
@@ -863,7 +863,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
 
     operation ECPointMontgomeryXZPointDoublerRandomTestHelper(PointDoubler : ((ECPointMontgomeryXZ,ECCoordsMontgomeryFormAPlusC,ECPointMontgomeryXZ)=>Unit is Ctl),
         nQubits : Int,nTests : Int) : Unit {
-        for (roundnum in 0..nTests - 1){
+        for roundnum in 0..nTests - 1 {
             let modulus = RandomFp2Modulus(nQubits);
 
             let point = ECPointMontgomeryXZClassical(
@@ -916,7 +916,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[12 * nQubits + nAncillas]){
+            use register = Qubit[12 * nQubits + nAncillas] {
                 let modulus = point::x::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
                 let zeroPoint = ECPointMontgomeryXZClassical(zeroFp2, zeroFp2);
@@ -964,8 +964,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                 set result = MeasureECPointMontgomeryXZ(qResult);
                 Fact(IsEqualMontgomeryXZClassical(result, zeroPoint), $"Uncomputed : Result : Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECPointMontgomeryXZ(point, qPoint);
                         EncodeECCoordsMontgomeryFormAPlusC(curve, qCurve);
@@ -1124,7 +1124,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[12 * nQubits + nAncillas]){
+            use register = Qubit[12 * nQubits + nAncillas] {
                 let modulus = pointP::x::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
                 let zeroPoint = ECPointMontgomeryXZClassical(zeroFp2, zeroFp2);
@@ -1172,8 +1172,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                 set result = MeasureECPointMontgomeryXZ(qResult);
                 Fact(IsEqualMontgomeryXZClassical(result, zeroPoint), $"Uncomputed : Result : Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECPointMontgomeryXZ(pointQ, qPointQ);
                         EncodeECPointMontgomeryXZ(pointR, qPointR);
@@ -1359,7 +1359,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         body (...){
             // Bookkeeping and qubit allocation
             let coefficientSize = Max([BitSizeL(coefficient), nQubits]);
-            using (register = Qubit[4 * nQubits + coefficientSize]) {
+            use register = Qubit[4 * nQubits + coefficientSize] {
                 mutable actualCoefficient = 0L;
                 let modulus = curve::a24Plus::modulus;
                 let zeroPoint = ECPointMontgomeryXZClassical(
@@ -1389,8 +1389,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                     , got ({actualPoint::x::real} + {actualPoint::x::imag}i,{actualPoint::z::real} + {actualPoint::z::imag}i)"
                 );
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(coefficient, qCoefficient);
 
@@ -1452,7 +1452,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
             Fp2ElementClassical(SIKEps::prime, 8L, 0L),
             Fp2ElementClassical(SIKEps::prime, 4L, 0L)
         );
-        for (idxTest in 0..nTests - 1){
+        for idxTest in 0..nTests - 1 {
             let coefficient = RandomBigInt(2L^twoTorsion);
             Message($"Finished {idxTest} tests");
             PointLadderTestHelper(
@@ -1511,7 +1511,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     ) : Unit {
         body (...){
             // Bookkeeping and qubit allocation
-            using (register = Qubit[12 * nQubits]) {
+            use register = Qubit[12 * nQubits] {
                 mutable actualCoefficient = 0L;
                 let modulus = curve::a24Plus::modulus;
                 let zeroPoint = ECPointMontgomeryXZClassical(
@@ -1532,7 +1532,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
  
                 // Compute expected classical result
                 mutable doubledPoint = point;
-                for (idx in 1..nDoublings){
+                for idx in 1..nDoublings {
                     set doubledPoint = PointDoubleMontgomeryXZClassical(doubledPoint, curve);
                 }
 
@@ -1556,8 +1556,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                     , got ({resultPoint::x::real} + {resultPoint::x::imag}i,{resultPoint::z::real} + {resultPoint::z::imag}i)"
                 );
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECPointMontgomeryXZ(point, qPoint);
                         EncodeECCoordsMontgomeryFormAPlusC(curve, qCurve);
@@ -1692,7 +1692,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[6 * nQubits + nAncillas]){
+            use register = Qubit[6 * nQubits + nAncillas] {
                 let modulus = curve::aCoeff::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
                 let zeroCurve = ECCoordsMontgomeryFormACClassical(zeroFp2, zeroFp2);
@@ -1736,8 +1736,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                 set result = MeasureFp2MontModInt(qResult);
                 Fact(IsEqualFp2Element(result, zeroFp2), $"Uncomputed :Result : Expected {zeroFp2}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECCoordsMontgomeryFormAC(curve, qCurve);
 
@@ -1822,7 +1822,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         nAncilla : Int,
         nTests : Int
     ) : Unit {
-        for (idxTest in 0.. nTests - 1){
+        for idxTest in 0.. nTests - 1 {
             mutable modulus = RandomFp2Modulus(nQubits);
             let curve = RandomECCoordsMontgomeryAC(modulus);
             JInvariantACOpenTestHelper(JInvariant, curve, nQubits, nAncilla);
@@ -1867,7 +1867,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     ) : Unit {
         body (...){
             // Bookkeeping and qubit allocation
-            using (register = Qubit[12 * nQubits]) {
+            use register = Qubit[12 * nQubits] {
                 mutable actualCoefficient = 0L;
                 let modulus = kernelPoint::x::modulus;
                 let zeroPoint = ECPointMontgomeryXZClassical(
@@ -1909,8 +1909,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                     , got ({resultPoint::x::real} + {resultPoint::x::imag}i,{resultPoint::z::real} + {resultPoint::z::imag}i)"
                 );
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECPointMontgomeryXZ(kernelPoint, qKernelPoint);
                         EncodeECPointMontgomeryXZ(inputPoint, qInputPoint);
@@ -2026,8 +2026,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         let twoTorsions = [pPoints[e2 - 1], qPoints[e2 - 1], rPoints[e2 - 1]];
         let threePoints = [P3, Q3, R3];
 
-        for (idxTwo in 0..2){
-            for (idxThree in 0..2){
+        for idxTwo in 0..2 {
+            for idxThree in 0..2 {
                 TwoIsogenyOfPointTestHelper(Isogeny, twoTorsions[idxTwo], threePoints[idxThree], nQubits);
             }
         }
@@ -2102,8 +2102,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         let twoTorsions = [pPoints[e2 - 1], qPoints[e2 - 1], rPoints[e2 - 1]];
         let threePoints = [P3, Q3, R3];
 
-        for (idxTwo in 0..2){
-            for (idxThree in 0..2){
+        for idxTwo in 0..2 {
+            for idxThree in 0..2 {
                 TwoIsogenyOfPointTestHelper(Isogeny, twoTorsions[idxTwo], threePoints[idxThree], nQubits);
             }
         }
@@ -2129,7 +2129,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         nQubits : Int,
         nTests : Int
     ) : Unit {
-        for (idxTest in 0.. nTests - 1){
+        for idxTest in 0.. nTests - 1 {
             let modulus = RandomFp2Modulus(nQubits);
             let pxFp2 = RandomFp2ElementClassical(modulus);
             let pzFp2 = RandomFp2ElementClassical(modulus);
@@ -2175,7 +2175,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     ) : Unit {
         body (...){
             // Bookkeeping and qubit allocation
-            using (register = Qubit[8 * nQubits]) {
+            use register = Qubit[8 * nQubits] {
                 mutable actualCoefficient = 0L;
                 let modulus = kernelPoint::x::modulus;
                 let zeroPoint = ECPointMontgomeryXZClassical(
@@ -2210,8 +2210,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                 Fact(IsEqualFp2Element(imageCurve::a24Plus, resultCurve::a24Plus)
                             and IsEqualFp2Element(imageCurve::c24, resultCurve::c24), 
                             $"Isogenous curve : Expected {imageCurve}, got {resultCurve}");
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeECPointMontgomeryXZ(kernelPoint, qKernelPoint);
 
@@ -2295,7 +2295,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
 
         let twoTorsions = [pPoints[e2 - 1], qPoints[e2 - 1], rPoints[e2 - 1]];
 
-        for (idxTwo in 0..2){
+        for idxTwo in 0..2 {
             TwoIsogenyOfCurveTestHelper(Isogeny, twoTorsions[idxTwo], nQubits);
         }
     }
@@ -2346,7 +2346,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
 
         let twoTorsions = [pPoints[e2 - 1], qPoints[e2 - 1], rPoints[e2 - 1]];
 
-        for (idxTwo in 0..2){
+        for idxTwo in 0..2 {
             TwoIsogenyOfCurveTestHelper(Isogeny, twoTorsions[idxTwo], nQubits);
         }
     }
@@ -2370,7 +2370,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
         nQubits : Int,
         nTests : Int
     ) : Unit {
-        for (idxTest in 0.. nTests - 1){
+        for idxTest in 0.. nTests - 1 {
             let modulus = RandomFp2Modulus(nQubits);
             let pxFp2 = RandomFp2ElementClassical(modulus);
             let pzFp2 = RandomFp2ElementClassical(modulus);
@@ -2415,7 +2415,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     ) : Unit {
         body (...){
             // Bookkeeping and qubit allocation
-            using (register = Qubit[height + 2 * nQubits]) {
+            use register = Qubit[height + 2 * nQubits] {
                 mutable actualCoefficient = 0L;
                 let modulus = pointP::x::modulus;
                 let zeroFp2 = Fp2ElementClassical(modulus, 0L, 0L);
@@ -2444,8 +2444,8 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
                     $"J-invariant : Expected ({trueJInvariant::real} + {trueJInvariant::imag}i), got ({actualJInvariant::real} + {actualJInvariant::imag}i)"
                 );
                 Fact(actualCoefficient == coefficient, $"Coefficient: Expected {coefficient}, got {actualCoefficient}");
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(coefficient, qCoefficient);
 
@@ -2505,7 +2505,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
             Fp2ElementClassical(SIKEps::prime, 8L, 0L),
             Fp2ElementClassical(SIKEps::prime, 4L, 0L)
         );
-        for (idxTest in 0..nTests - 1){
+        for idxTest in 0..nTests - 1 {
 
             let coefficient = RandomBigInt(2L ^ SIKEps::twoOrder);
             SIKEIsogenyTestHelper(
@@ -2528,7 +2528,7 @@ namespace Microsoft.Quantum.Crypto.Tests.Isogenies {
     }
 
     operation InreasingSIKEIsogenyTest () : Unit {
-        for (twoTorsion in 13.. 128){
+        for twoTorsion in 13.. 128 {
             Message($"============================================================
             
           TESTING TWO TORSION OF {twoTorsion}

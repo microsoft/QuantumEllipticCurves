@@ -15,7 +15,7 @@ namespace Microsoft.Quantum.Crypto.Basics
             {
             }
 
-            public override Func<QVoid, bool> Body => IsMinimizeWidthCostMetricFunc;
+            public override Func<QVoid, bool> __Body__ => IsMinimizeWidthCostMetricFunc;
 
             public static bool IsMinimizeWidthCostMetricFunc(QVoid qVoid)
             {

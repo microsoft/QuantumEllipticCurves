@@ -45,7 +45,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         modulus : BigInt, 
         nQubits : Int 
      ) : Unit {
-        using (register = Qubit[3 * nQubits]) {
+        use register = Qubit[3 * nQubits] {
             // Bookkeeping and ancilla allocation
             mutable actual1 = 0L;
             mutable actual2 = 0L;
@@ -73,8 +73,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
             set actualm = MeasureBigInteger(modulusLE);
             Fact(modulus== actualm, $"Expected {modulus}, got {actualm}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     ApplyXorInPlaceL(summand1, summand1LE);
                     ApplyXorInPlaceL(summand2, summand2LE);
@@ -118,9 +118,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
     }
 
     operation ModularAddExhaustiveTestHelper (Adder : ((LittleEndian, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int) : Unit {
-        for( modulus in 2^(nQubits-1) .. 2^nQubits - 1 ) {
-            for( summand1 in 0 .. modulus - 1 ) {
-                for( summand2 in 0 .. modulus - 1 ) {
+        for  modulus in 2^(nQubits-1) .. 2^nQubits - 1  {
+            for  summand1 in 0 .. modulus - 1  {
+                for  summand2 in 0 .. modulus - 1  {
                     ModularAddTestHelper(Adder, IntAsBigInt(summand1), IntAsBigInt(summand2), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -178,7 +178,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         modulus : BigInt, 
         nQubits : Int 
     ) : Unit {
-        using (register = Qubit[2 * nQubits]) {
+        use register = Qubit[2 * nQubits] {
             // Bookkeeping and qubit allocation
             mutable actual1 = 0L;
             mutable actualm = 0L;
@@ -201,8 +201,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
             set actualm = MeasureBigInteger(modulusLE);
             Fact(modulus== actualm, $"Expected {modulus}, got {actualm}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     ApplyXorInPlaceL(integer, integerLE);
                     ApplyXorInPlaceL(modulus, modulusLE);
@@ -240,8 +240,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
     }
 
     operation ModularNegExhaustiveTestHelper (Negater : ((LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int) : Unit {
-        for(modulus in 2^(nQubits-1) .. 2^nQubits - 1 ) {
-            for(integer in 0 .. modulus - 1 ) {
+        for modulus in 2^(nQubits-1) .. 2^nQubits - 1  {
+            for integer in 0 .. modulus - 1  {
                 ModularNegTestHelper(Negater, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
             }
         }
@@ -296,7 +296,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         modulus : BigInt, 
         nQubits : Int 
     ) : Unit {
-        using (register = Qubit[2 * nQubits]) {
+        use register = Qubit[2 * nQubits] {
             // Bookkeeping and ancilla allocation
             mutable actual1 = 0L;
             mutable actualm = 0L;
@@ -319,8 +319,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
             set actualm = MeasureBigInteger(modulusLE);
             Fact(modulus== actualm, $"Expected {modulus}, got {actualm}");
 
-            for (numberOfControls in 1..2) { 
-                using (controls = Qubit[numberOfControls]) {
+            for numberOfControls in 1..2 { 
+                use controls = Qubit[numberOfControls] {
                     // Write to qubit registers
                     ApplyXorInPlaceL(integer, integerLE);
                     ApplyXorInPlaceL(modulus, modulusLE);
@@ -359,8 +359,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularDblExhaustiveTestHelper (Doubler : ((LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int) : Unit {
         body (...) {
-            for( modulus in 2^(nQubits-1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for  modulus in 2^(nQubits-1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     ModularDblTestHelper(Doubler, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -431,7 +431,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             //Bookkeeping and qubit allocation
-            using (register = Qubit[4 * nQubits]) {
+            use register = Qubit[4 * nQubits] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 mutable actualr = 0L;
@@ -464,8 +464,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureBigInteger(resultLE);
                 Fact(expected== actualr, $"Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(multiplier1, multiplier1LE);
                         ApplyXorInPlaceL(multiplier2, multiplier2LE);
@@ -517,9 +517,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
    operation ModularMultiplierExhaustiveTestHelper ( ModularMultiplier : ( (LittleEndian, LittleEndian, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int ) : Unit {
         body (...) {
-            for( modulus in 2^(nQubits-1)+1 ..2.. 2^nQubits - 1 ) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
+            for  modulus in 2^(nQubits-1)+1 ..2.. 2^nQubits - 1  {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
                         ModularMultiplierTestHelper(ModularMultiplier, IntAsBigInt(multiplier1), IntAsBigInt(multiplier2), IntAsBigInt(modulus), nQubits);
                     }
                 }
@@ -585,7 +585,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     operation ModularSquarerTestHelper( ModularSquarer : ( (LittleEndian, LittleEndian, LittleEndian) => Unit is Ctl), integer : BigInt, modulus : BigInt, nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[3 * nQubits]) {
+            use register = Qubit[3 * nQubits] {
                 mutable actual = 0L;
                 mutable actualr = 0L;
                 mutable actualm = 0L;
@@ -613,8 +613,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureBigInteger(resultLE);
                 Fact(expected==actualr, $"Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(integer, integerLE);
                         ApplyXorInPlaceL(0L, resultLE);
@@ -660,8 +660,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
    operation ModularSquarerExhaustiveTestHelper ( ModularSquarer : ( (LittleEndian, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     ModularSquarerTestHelper(ModularSquarer, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -722,7 +722,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
    operation ModularAddConstantModulusTestHelper(ModularAdder : ((BigInt, LittleEndian, LittleEndian) => Unit is Ctl), summand1 : BigInt, summand2 : BigInt, modulus : BigInt, nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 let summand1LE = LittleEndian(register[0 .. nQubits - 1]);
@@ -744,8 +744,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actual2 = MeasureBigInteger(summand2LE);
                 Fact(expected== actual2, $"Expected {expected}, got {actual2}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(summand1, summand1LE);
                         ApplyXorInPlaceL(summand2, summand2LE);
@@ -785,9 +785,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularAddConstantModulusExhaustiveTestHelper (ModularAdder : ((BigInt, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int) : Unit {
         body (...) {
-            for( modulus in 2^(nQubits-1) .. 2^nQubits - 1 ) {
-                for( summand1 in 0 .. modulus - 1 ) {
-                    for( summand2 in 0 .. modulus - 1 ) {
+            for  modulus in 2^(nQubits-1) .. 2^nQubits - 1  {
+                for  summand1 in 0 .. modulus - 1  {
+                    for  summand2 in 0 .. modulus - 1  {
                         ModularAddConstantModulusTestHelper(ModularAdder, IntAsBigInt(summand1), IntAsBigInt(summand2), IntAsBigInt(modulus), nQubits);
                     }
                 }
@@ -824,7 +824,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularAddConstantModulusExhaustiveTestReversible () : Unit {
         body (...) {
-            for (nQubits in 2..15) {
+            for nQubits in 2..15 {
                 ModularAddConstantModulusExhaustiveTestHelper (ModularAddConstantModulus, nQubits);
             }
         }
@@ -856,7 +856,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual1 = 0L;
                 let integerLE = LittleEndian(register[0 .. nQubits - 1]);
  
@@ -873,8 +873,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actual1 = MeasureBigInteger(integerLE);
                 Fact(expected==actual1, $"Expected {expected}, got {actual1}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         ApplyXorInPlaceL(integer, integerLE);
 
@@ -898,8 +898,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularDblConstantModulusExhaustiveTestHelper (Doubler : ((BigInt, LittleEndian) => Unit is Ctl), nQubits : Int) : Unit {
         body (...) {
-            for( modulus in 2^(nQubits-1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for  modulus in 2^(nQubits-1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     ModularDblConstantModulusTestHelper(Doubler, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -961,7 +961,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
    operation ModularAddConstantConstantModulusTestHelper( Adder:((BigInt, BigInt, LittleEndian) => Unit is Ctl), summand1 : BigInt, summand2 : BigInt, modulus : BigInt, nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual1 = 0L;
                 let summand1LE = LittleEndian(register[0 .. nQubits - 1]);
                 let summand2LE = LittleEndian(register[nQubits .. 2 * nQubits - 1]);
@@ -979,8 +979,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actual1 = MeasureBigInteger(summand1LE);
                 Fact(expected== actual1, $"Expected {expected}, got {actual1}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         ApplyXorInPlaceL(summand1, summand1LE);
 
@@ -1014,9 +1014,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularAddConstantConstantModulusExhaustiveTestHelper (Adder:((BigInt, BigInt, LittleEndian)=>Unit is Ctl), nQubits : Int) : Unit {
         body (...) {
-            for( modulus in 2^(nQubits-1) .. 2^nQubits - 1 ) {
-                for( summand1 in 0 .. modulus - 1) {
-                    for( summand2 in 0 .. modulus - 1 ) {
+            for  modulus in 2^(nQubits-1) .. 2^nQubits - 1  {
+                for  summand1 in 0 .. modulus - 1 {
+                    for  summand2 in 0 .. modulus - 1  {
                         ModularAddConstantConstantModulusTestHelper(Adder, IntAsBigInt(summand1), IntAsBigInt(summand2), IntAsBigInt(modulus), nQubits);
                     }
                 }
@@ -1106,7 +1106,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[3 * nQubits]) {
+            use register = Qubit[3 * nQubits] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 mutable actualr = 0L;
@@ -1134,8 +1134,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureBigInteger(resultLE);
                 Fact(expected== actualr, $"Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(multiplier1, multiplier1LE);
                         ApplyXorInPlaceL(multiplier2, multiplier2LE);
@@ -1181,9 +1181,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
    operation ModularMultiplierConstantModulusExhaustiveTestHelper ( ModularMultiplier : ( (BigInt, LittleEndian, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
                         ModularMultiplierConstantModulusTestHelper(ModularMultiplier, IntAsBigInt(multiplier1), IntAsBigInt(multiplier2), IntAsBigInt(modulus), nQubits);
                     }
                 }
@@ -1248,7 +1248,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     operation ModularSquarerConstantModulusTestHelper( ModularSquarer : ( (BigInt, LittleEndian, LittleEndian) => Unit is Ctl), integer : BigInt, modulus : BigInt, nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual = 0L;
                 mutable actualr = 0L;
                 let integerLE = LittleEndian(register[0 .. nQubits - 1]);
@@ -1271,8 +1271,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureBigInteger(resultLE);
                 Fact(expected== actualr, $"Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         ApplyXorInPlaceL(integer, integerLE);
                         ApplyXorInPlaceL(0L, resultLE);
@@ -1312,8 +1312,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
    operation ModularSquarerConstantModulusExhaustiveTestHelper ( ModularSquarer : ( (BigInt, LittleEndian, LittleEndian) => Unit is Ctl), nQubits : Int ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     ModularSquarerConstantModulusTestHelper(ModularSquarer, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -1373,7 +1373,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     operation ModularNegConstantModulusTestHelper(Negater : ((BigInt, LittleEndian) => Unit is Ctl + Adj), integer : BigInt, modulus : BigInt, nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation 
-            using (register = Qubit[nQubits]) {
+            use register = Qubit[nQubits] {
                 mutable actual1 = 0L;
                 let integerLE = LittleEndian(register[0 .. nQubits - 1]);
  
@@ -1390,8 +1390,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actual1 = MeasureBigInteger(integerLE);
                 Fact(expected== actual1, $"Expected {expected}, got {actual1}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         ApplyXorInPlaceL(integer, integerLE);
 
@@ -1425,8 +1425,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularNegConstantModulusExhaustiveTestHelper (Negater : ((BigInt, LittleEndian) => Unit is Ctl + Adj), nQubits : Int) : Unit {
         body (...) {
-             for( modulus in 2^(nQubits-1) .. 2^nQubits - 1 ) {
-                for( integer in 0 .. modulus - 1 ) {
+             for  modulus in 2^(nQubits-1) .. 2^nQubits - 1  {
+                for  integer in 0 .. modulus - 1  {
                     ModularNegConstantModulusTestHelper(Negater, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits);
                 }
             }
@@ -1494,7 +1494,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual = 0L;
                 mutable actualr = 0L;
                 let integerLE = LittleEndian(register[0 .. nQubits - 1]);
@@ -1516,8 +1516,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureBigInteger(resultLE);
                 Fact(expected== actualr, $"Non-controlled result: Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         ApplyXorInPlaceL(integer, integerLE);
                         ApplyXorInPlaceL(0L, resultLE);
@@ -1560,9 +1560,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
-                    for( constant in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
+                    for  constant in 0 .. modulus - 1  {
                         ModularConstantMultipleConstantModulusTestHelper(
                             ModularConstantMultiplier, 
                             IntAsBigInt(integer), 
@@ -1621,7 +1621,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[nQubits]) {
+            use register = Qubit[nQubits] {
                 mutable actual = 0L;
                 let integerLE = LittleEndian(register[0 .. nQubits - 1]);
  
@@ -1638,8 +1638,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actual = MeasureBigInteger(integerLE);
                 Fact(expected==actual, $"Non-controlled Result: Expected {integer}, got {actual}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         ApplyXorInPlaceL(integer, integerLE);
 
@@ -1676,9 +1676,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 1 .. modulus - 1 ) {
-                    for( constant in 1 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 1 .. modulus - 1  {
+                    for  constant in 1 .. modulus - 1  {
                         if (GreatestCommonDivisorI(integer, constant)==1){
                             ModularMultiplyInPlaceTestHelper(
                                 ModularConstantMultiplier, 
@@ -1752,7 +1752,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[3 * nQubits]) {
+            use register = Qubit[3 * nQubits] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 mutable actualr = 0L;
@@ -1778,8 +1778,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureMontgomeryInteger(resultMMI);
                 Fact(expected== actualr, $"Expected {expected} as product, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(multiplier1, multiplier1MMI);
                         EncodeBigIntInMontgomeryForm(multiplier2, multiplier2MMI);
@@ -1828,10 +1828,10 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
-                        for ( output in 0 .. modulus - 1 ){
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
+                        for  output in 0 .. modulus - 1  {
                             ModularMultiplierMontgomeryFormTestHelper(
                                 ModularMultiplier, 
                                 IntAsBigInt(multiplier1), 
@@ -1918,7 +1918,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[3 * nQubits + nAncillas]){
+            use register = Qubit[3 * nQubits + nAncillas] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 mutable result  = 0L;
@@ -1963,8 +1963,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set result = MeasureMontgomeryInteger(resultMMI);
                 Fact(result == 0L, $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(multiplier1, multiplier1MMI);
                         EncodeBigIntInMontgomeryForm(multiplier2, multiplier2MMI);
@@ -2048,9 +2048,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nAncillas : Int
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
                         ModularMulMontgomeryFormOpenTestHelper(
                             ModularMultiplier, 
                             IntAsBigInt(multiplier1), 
@@ -2072,7 +2072,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nTests : Int
     ) : Unit {
         body (...) {
-            for (idx in 0 .. nTests - 1){
+            for idx in 0 .. nTests - 1 {
                 let modulus = 2L^(nQubits - 1) + 2L*RandomBigInt(2L^(nQubits - 2)) + 1L;
                 let multiplier1 = RandomBigInt(modulus);
                 let multiplier2 = RandomBigInt(modulus);
@@ -2170,7 +2170,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits + nAncillas]){
+            use register = Qubit[2 * nQubits + nAncillas] {
                 mutable actual2 = 0L;
                 mutable result  = 0L;
                 mutable ancilla = 0L;
@@ -2208,8 +2208,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set result = MeasureMontgomeryInteger(resultMMI);
                 Fact(result == 0L, $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         EncodeBigIntInMontgomeryForm(multiplier2, multiplier2MMI);
 
@@ -2281,9 +2281,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nAncillas : Int
         ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
                         ModularMulConstantMontgomeryFormOpenTestHelper(
                             ModularMultiplier, 
                             IntAsBigInt(multiplier1), 
@@ -2372,7 +2372,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual1 = 0L;
                 mutable actual2 = 0L;
                 mutable actualr = 0L;
@@ -2394,8 +2394,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureMontgomeryInteger(resultMMI);
                 Fact(expected== actualr, $"Expected {expected} as product, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(multiplier2, multiplier2MMI);
                         EncodeBigIntInMontgomeryForm(output, resultMMI);
@@ -2437,10 +2437,10 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( multiplier1 in 0 .. modulus - 1 ) {
-                    for( multiplier2 in 0 .. modulus - 1 ) {
-                        for ( output in 0 .. modulus - 1 ){
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  multiplier1 in 0 .. modulus - 1  {
+                    for  multiplier2 in 0 .. modulus - 1  {
+                        for  output in 0 .. modulus - 1  {
                             ModularConstantMultiplierMontgomeryFormTestHelper(
                                 ModularMultiplier, 
                                 IntAsBigInt(multiplier1), 
@@ -2527,7 +2527,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and ancilla allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual = 0L;
                 mutable actualr = 0L;
 
@@ -2548,8 +2548,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureMontgomeryInteger(resultMMI);
                 Fact(expected== actualr, $"Inverse: Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(integer, integerMMI);
                         EncodeBigIntInMontgomeryForm(0L, resultMMI);
@@ -2589,8 +2589,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
 
     operation ModularInvMontgomeryFormExhaustiveTestHelper ( ModularInverter : ( (MontModInt, MontModInt) => Unit is Ctl), nQubits : Int ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer1 in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer1 in 0 .. modulus - 1  {
                     if (GreatestCommonDivisorI(modulus, integer1)==1){
                         ModularInvMontgomeryFormTestHelper(ModularInverter, IntAsBigInt(integer1), IntAsBigInt(modulus), nQubits);
                     }
@@ -2645,7 +2645,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[3 * nQubits]) {
+            use register = Qubit[3 * nQubits] {
                 mutable actuali = 0L;
                 mutable actualm = 0L;
                 mutable actuals = 0L;
@@ -2671,8 +2671,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actuals = MeasureMontgomeryInteger(summandMMI);
                 Fact(sum== actuals, $"Result: Expected {sum}, got {actuals}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(invertand, invertandMMI);
                         EncodeBigIntInMontgomeryForm(multiplicand, multiplicandMMI);
@@ -2721,11 +2721,11 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( invertand in 1 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  invertand in 1 .. modulus - 1  {
                     if (GreatestCommonDivisorI(modulus, invertand)==1){
-                        for( multiplicand in 0 .. modulus - 1 ) {
-                            for( summand in 0 .. modulus - 1 ) {
+                        for  multiplicand in 0 .. modulus - 1  {
+                            for  summand in 0 .. modulus - 1  {
                                 ModularDivideMontgomeryFormTestHelper(
                                     ModularDivider, 
                                     IntAsBigInt(modulus), 
@@ -2778,7 +2778,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     operation ModularDivMontgomeryFormLargeTestReversible () : Unit {
         body (...) {
             let nTests = 2;
-            for (nQubits in 6..192){
+            for nQubits in 6..192 {
                 Message($"{nQubits} qubits:");
                 mutable idxTest = 0;
                 while (idxTest <= nTests){
@@ -2822,7 +2822,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits + nAncillas]){
+            use register = Qubit[2 * nQubits + nAncillas] {
                 mutable actual = 0L;
                 mutable result  = 0L;
                 mutable ancilla = 0L;
@@ -2860,8 +2860,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set result = MeasureMontgomeryInteger(resultMMI);
                 Fact(result == 0L, $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit register
                         EncodeBigIntInMontgomeryForm(input, inputMMI);
 
@@ -2932,8 +2932,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nAncillas : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     if (GreatestCommonDivisorI(integer, modulus)==1 or integer==0){
                         ModularInvMontgomeryFormOpenTestHelper(ModularInverter, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits, nAncillas);
                     }
@@ -2992,7 +2992,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits]) {
+            use register = Qubit[2 * nQubits] {
                 mutable actual = 0L;
                 mutable actualr = 0L;
 
@@ -3013,8 +3013,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set actualr = MeasureMontgomeryInteger(resultMMI);
                 Fact(expected== actualr, $"Result: Expected {expected}, got {actualr}");
 
-                for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(integer, integerMMI);
                         EncodeBigIntInMontgomeryForm(summand, resultMMI); 
@@ -3057,9 +3057,9 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nQubits : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
-                    for( summand in 0 .. modulus - 1 ){
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
+                    for  summand in 0 .. modulus - 1  {
                         ModularSquAndAddMontgomeryFormTestHelper(ModularSquarer, IntAsBigInt(integer), IntAsBigInt(summand), IntAsBigInt(modulus), nQubits);
                     }
                 }
@@ -3114,7 +3114,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
     ) : Unit {
         body (...) {
             // Bookkeeping and qubit allocation
-            using (register = Qubit[2 * nQubits + nAncillas]){
+            use register = Qubit[2 * nQubits + nAncillas] {
                 mutable actual = 0L;
                 mutable result  = 0L;
                 mutable ancilla = 0L;
@@ -3152,8 +3152,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
                 set result = MeasureMontgomeryInteger(resultMMI);
                 Fact(result == 0L, $"Uncomputed: Result: Expected {0}, got {result}");
 
-                 for (numberOfControls in 1..2) { 
-                    using (controls = Qubit[numberOfControls]) {
+                 for numberOfControls in 1..2 { 
+                    use controls = Qubit[numberOfControls] {
                         // Write to qubit registers
                         EncodeBigIntInMontgomeryForm(input, inputMMI);
 
@@ -3225,8 +3225,8 @@ namespace Microsoft.Quantum.Crypto.Tests {
         nAncillas : Int 
     ) : Unit {
         body (...) {
-            for (modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1) {
-                for( integer in 0 .. modulus - 1 ) {
+            for modulus in 2^(nQubits - 1) + 1 ..2.. 2^nQubits - 1 {
+                for  integer in 0 .. modulus - 1  {
                     ModularSquMontgomeryFormOpenTestHelper(ModularSquarer, IntAsBigInt(integer), IntAsBigInt(modulus), nQubits, nAncillas);
                 }
             }

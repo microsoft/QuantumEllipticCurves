@@ -21,7 +21,7 @@ namespace Microsoft.Quantum.Crypto.Basics
             {
             }
 
-            public override Func<QVoid, bool> Body => IsTestableFunc;
+            public override Func<QVoid, bool> __Body__ => IsTestableFunc;
 
             public static bool IsTestableFunc(QVoid qVoid)
             {
